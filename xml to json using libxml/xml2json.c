@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
- 
+#include <sys/types.h>
+#include <unistd.h>
 /* 
 reference from
 https://qnaplus.com/print-xml-file-tree-form-libxml2-c-programming/
@@ -21,7 +22,7 @@ int is_leaf(xmlNode * node)
   return 1;
 }
  
-void print_xml(xmlNode * node, int indent_len)
+void xml2json(xmlNode * node, int indent_len)
 {
     int i=0;
     while(node)
@@ -31,39 +32,44 @@ void print_xml(xmlNode * node, int indent_len)
           if(is_leaf(node)){
              i++;
              printf("%*c\"%s\": \"%s\"", indent_len*2, ' ', node->name, xmlNodeGetContent(node));
-	     if(node->next != NULL)printf(",\n");
+	     if(node->next->next)printf(",\n");
+             else printf("\n");
            }
           else{
 
              printf("%*c\"%s\": {\n", indent_len*2, ' ', node->name);
              
-             print_xml(node->children, indent_len + 1);
+             xml2json(node->children, indent_len + 1);
+             if(!node->next)printf("%*c\n", (indent_len+1)*2 -1,'}');
+             else if(node->next->next)printf("%*c,\n", (indent_len+1)*2 -1,'}');
+             else printf("%*c\n", (indent_len+1)*2 -1,'}');
           }
         }
         //print_xml(node->children, indent_len + 1);
         
         node = node->next;
     }
-    if(i>1)printf("%*c,\n", indent_len*2 -1,'}');
-    else printf("%*c\n", indent_len*2 -1,'}');
+    //if(i>1)printf("%*c,\n", indent_len*2 -1,'}');
+    //else printf("%*c\n", indent_len*2 -1,'}');
     
 }
  
 int main(){
+  
   xmlDoc *doc = NULL;
   xmlNode *root_element = NULL;
  
-  doc = xmlReadFile("dummy.xml",NULL,0);
+  doc = xmlReadFile("bmd.xml",NULL,0);
  
   if (doc == NULL) {
     printf("Could not parse the XML file");
   }
- 
+
   root_element = xmlDocGetRootElement(doc);
   printf("{\n");
-  print_xml(root_element, 1);
+  xml2json(root_element, 1);
+  printf("}\n");
 
   xmlFreeDoc(doc);
- 
   xmlCleanupParser();
 }
