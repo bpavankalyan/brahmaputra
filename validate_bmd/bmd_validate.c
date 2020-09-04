@@ -189,7 +189,7 @@ int main(){
   
   MYSQL_RES *result = mysql_store_result(conn);
   
-  if (result == NULL) 
+  if (!mysql_fetch_row(result)) 
   {
       printf( "For the received Sender, Destination, Message Type there are no  active route record present in the routes table \n");
       exit(1);
