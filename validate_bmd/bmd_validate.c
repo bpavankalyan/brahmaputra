@@ -220,7 +220,7 @@ int main(){
   
           MYSQL_RES *result2 = mysql_store_result(conn);
            
-          if (result2 == NULL) 
+         if (!mysql_fetch_row(result2)) 
           {
                 printf( "For this route id there are no record present in the transport_config table \n");
                 exit(1);
@@ -233,7 +233,7 @@ int main(){
   
           MYSQL_RES *result3 = mysql_store_result(conn);
   
-          if (result3 == NULL) 
+           if (!mysql_fetch_row(result3)) 
           {
                 printf( "For this route id there are no record present in the transform_config table \n");
                 exit(1);
