@@ -4,11 +4,13 @@
 #include <sys/types.h>
 #include <unistd.h>
 /* 
-reference from
-https://qnaplus.com/print-xml-file-tree-form-libxml2-c-programming/
+takes in xml file and uses libxml to convert it in a tree like data structure and then prints in json format using libxml.
+
 how to run:-
 gcc -Wall -I/usr/include/libxml2 -o xml2json xml2json.c -lxml2*/
  
+
+//checks whether a node is leaf node
 int is_leaf(xmlNode * node)
 {
   xmlNode * child = node->children;
@@ -21,7 +23,8 @@ int is_leaf(xmlNode * node)
  
   return 1;
 }
- 
+
+ // takes the root node and recursively prints in json format
 void xml2json(xmlNode * node, int indent_len)
 {
     int i=0;
