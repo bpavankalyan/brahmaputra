@@ -65,7 +65,7 @@ int main(){
   doc = xmlReadFile("bmd.xml",NULL,0);
  
   if (doc == NULL) {
-    printf("Could not parse the XML file");
+    printf("invalid format for xml file");
   }
 
   root_element = xmlDocGetRootElement(doc);
