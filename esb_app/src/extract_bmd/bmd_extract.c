@@ -3,8 +3,7 @@
 #include <libxml/tree.h>
  
 /* 
-reference from
-https://qnaplus.com/print-xml-file-tree-form-libxml2-c-programming/
+parses xml file in tree form using libxml and extracts envelope fields and payload from it.
 how to run:-
 gcc -Wall -I/usr/include/libxml2 -o xml2json xml2json.c -lxml2*/
  
@@ -37,10 +36,11 @@ int main(){
   doc = xmlReadFile("bmd.xml",NULL,0);
  
   if (doc == NULL) {
-    printf("Could not parse the XML file");
+    printf("invalid xml format");
   }
  
   root = xmlDocGetRootElement(doc);
+ //extracts envelope node
   node=xmlFirstElementChild(root)->children;
   
   int i=0;
@@ -55,6 +55,7 @@ int main(){
         }       
         node = node->next;
     }
+ //extracts payload node
   payload=xmlLastElementChild(root);
    while(payload)
     {   
