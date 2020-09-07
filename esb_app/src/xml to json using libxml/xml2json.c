@@ -3,14 +3,15 @@
 #include <libxml/tree.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include<string.h>
 /* 
 takes in xml file and uses libxml to convert it in a tree like data structure and then prints in json format using libxml.
-
 how to run:-
 gcc -Wall -I/usr/include/libxml2 -o xml2json xml2json.c -lxml2*/
  
 
 //checks whether a node is leaf node
+ 
 int is_leaf(xmlNode * node)
 {
   xmlNode * child = node->children;
@@ -23,10 +24,10 @@ int is_leaf(xmlNode * node)
  
   return 1;
 }
-
- // takes the root node and recursively prints in json format
-void xml2json(xmlNode * node, int indent_len)
+ 
+void xml2json(xmlNode * node, int indent_len, char json[])
 {
+    char  s[100];
     int i=0;
     while(node)
     {   
@@ -34,18 +35,30 @@ void xml2json(xmlNode * node, int indent_len)
         { 
           if(is_leaf(node)){
              i++;
-             printf("%*c\"%s\": \"%s\"", indent_len*2, ' ', node->name, xmlNodeGetContent(node));
-	     if(node->next->next)printf(",\n");
-             else printf("\n");
+             
+             sprintf(s, "%*c\"%s\": \"%s\"", indent_len*2, ' ', node->name, xmlNodeGetContent(node));
+             strcat(json,s);
+	     if(node->next->next)sprintf(s,"%s",",\n");
+             else sprintf(s,"%s","\n");
+             strcat(json,s);
            }
           else{
 
-             printf("%*c\"%s\": {\n", indent_len*2, ' ', node->name);
-             
-             xml2json(node->children, indent_len + 1);
-             if(!node->next)printf("%*c\n", (indent_len+1)*2 -1,'}');
-             else if(node->next->next)printf("%*c,\n", (indent_len+1)*2 -1,'}');
-             else printf("%*c\n", (indent_len+1)*2 -1,'}');
+             sprintf(s,"%*c\"%s\": {\n", indent_len*2, ' ', node->name);
+             strcat(json,s);
+             xml2json(node->children, indent_len + 1,json);
+             if(!node->next){
+               sprintf(s,"%*c\n", (indent_len+1)*2 -1,'}');
+               strcat(json,s);
+             }
+             else if(node->next->next){ 
+               sprintf(s,"%*c,\n", (indent_len+1)*2 -1,'}');
+               strcat(json,s);
+             }
+             else{ 
+               sprintf(s,"%*c\n", (indent_len+1)*2 -1,'}');
+               strcat(json,s);
+             }
           }
         }
         //print_xml(node->children, indent_len + 1);
@@ -54,25 +67,43 @@ void xml2json(xmlNode * node, int indent_len)
     }
     //if(i>1)printf("%*c,\n", indent_len*2 -1,'}');
     //else printf("%*c\n", indent_len*2 -1,'}');
-    
+
 }
  
-int main(){
-  
+void xml_to_json(char* xml_file, char* json_file){
+  char json[1000]="{\n";
   xmlDoc *doc = NULL;
   xmlNode *root_element = NULL;
- 
-  doc = xmlReadFile("bmd.xml",NULL,0);
+  char json_string[1000]="";
+  doc = xmlReadFile(xml_file,NULL,0);
  
   if (doc == NULL) {
-    printf("invalid format for xml file");
+    printf("invalid format XML file");
   }
-
-  root_element = xmlDocGetRootElement(doc);
-  printf("{\n");
-  xml2json(root_element, 1);
-  printf("}\n");
-
+  else{
+    root_element = xmlDocGetRootElement(doc);
+    xml2json(root_element, 1, json_string);
+    FILE *fptr;
+    fptr = fopen(json_file,"w");
+    strcat(json,json_string);
+    strcat(json,"}\n");
+    fprintf(fptr,"%s",json);
+    printf("%s",json);
+  }
+  
   xmlFreeDoc(doc);
   xmlCleanupParser();
+
+  
+
+}
+
+int main(){
+  char* input="bmd.xml";
+  char * output="bmd2.json";
+
+  xml_to_json(input, output);
+  return 0;
+
+
 }
