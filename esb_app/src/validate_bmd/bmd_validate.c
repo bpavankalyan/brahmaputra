@@ -1,6 +1,5 @@
 /*
 gcc -Wall -I/usr/include/libxml2  -o test  bmd_validate.c  `mysql_config --cflags --libs` -lxml2
-
 The validation will be done mainly for the envelope part of the BMD.
 1. The mandatory values (Sender, Destination, Message Type, etc.) must be present in the
 received BMD.
@@ -18,29 +17,16 @@ types, etc
 #include <libxml/tree.h>
 #include <string.h>
 #include <mysql.h>
+#include "bmd_extract.c"
 
-struct map{
-  char * key;
-  char * value;
-};
-
-int is_leaf(xmlNode * node)
-{
-  xmlNode * child = node->children;
-  while(child)
-  {
-    if(child->type == XML_ELEMENT_NODE) return 0;
- 
-    child = child->next;
-  }
- 
-  return 1;
-}
- 
  
 
  
-int main(){
+int validate_bmd (char * bmd){
+
+  char * filename=bmd;
+  char * fields[10];
+  extract_bmd(filename, fields); 
   MYSQL *conn;
 
   MYSQL_ROW row;
@@ -55,124 +41,20 @@ int main(){
   /* Connect to database */
   if (!mysql_real_connect(conn, server, user, password, database, 0, NULL, 0)) {
 	fprintf(stderr, "%s\n", mysql_error(conn));
-	exit(1);
+	return 0;
   }
 	
   
-  struct map attributes[20];
-  xmlDoc *doc = NULL;
-  xmlNode *root = NULL;
-  xmlNode *node = NULL;
-  xmlNode *payload = NULL;
-  doc = xmlReadFile("bmd.xml",NULL,0);
-  
-  if (doc == NULL) {
-    printf("wrong syntax in xml");
-  }
- 
-  root = xmlDocGetRootElement(doc);
-  node=xmlFirstElementChild(root)->children;
-  
-  int i=0;
+  char * MessageID=fields[0];
+  char * MessageType=fields[1];
+  char * Sender=fields[2];
+  char * Destination=fields[3];
+  char * CreationDateTime=fields[4];
+  char * Signature=fields[5];
+  char * ReferenceID=fields[6];
+  char * Payload=fields[7];
 
-  while(node)
-    {   
-        if(node->type == XML_ELEMENT_NODE)
-        {    
-           attributes[i].key=(char *)node->name;
-           attributes[i].value=(char *) xmlNodeGetContent(node);
-           i++; 
-        }       
-        node = node->next;
-    }
-  payload=xmlLastElementChild(root);
-   while(payload)
-    {   
-        if(payload->type == XML_ELEMENT_NODE)
-        {    
-           attributes[i].key=(char *)payload->name;
-           attributes[i].value=(char *) xmlNodeGetContent(payload);
-           i++; 
-        }  
-        payload = payload->next;
-    }
-  char * MessageID="MessageID";
-  char * MessageType="MessageType";
-  char * Sender="Sender";
-  char * Destination="Destination";
-  char * CreationDateTime="CreationDateTime";
-  char * Signature="Signature";
-  char * ReferenceID="ReferenceID";
-  char * Payload="Payload";
-  int m1=0, m2=0, m3=0, m4=0, m5=0, m6=0, m7=0, m8=0;
-  for(int j=0;j<i;j++){
-     char * s= attributes[j].key;
-     if(strcmp(MessageID,s)==0){
-       m1=1;
-       MessageID=attributes[j].value;
-     }
-     if(strcmp(MessageType,s)==0){
-       m2=1;
-       MessageType=attributes[j].value;
-     }
-     if(strcmp(Sender,s)==0){
-       m3=1;
-       Sender=attributes[j].value;
-     }
-     if(strcmp(Destination,s)==0){
-       m4=1;
-       Destination=attributes[j].value;
-     }
-     if(strcmp(CreationDateTime,s)==0){
-       m5=1;
-       CreationDateTime=attributes[j].value;
-     }
-     if(strcmp(Signature,s)==0){
-       m6=1;
-       Signature=attributes[j].value;
-     }
-     if(strcmp(ReferenceID,s)==0){
-       m7=1;
-       ReferenceID=attributes[j].value;
-     }
-     if(strcmp(Payload,s)==0){
-       m8=1;
-       Payload=attributes[j].value;
-     }
-     
-     
-  }
-  if(m1==0){
-    printf("%s field is not present in BMD File", MessageID);
-  }
-  if(m2==0){
-    printf("%s field is not present in BMD File", MessageType);
-  }
-  if(m3==0){
-    printf("%s field is not present in BMD File", Sender);
-  }
-  if(m4==0){
-    printf("%s field is not present in BMD File", Destination);
-  }
-  if(m5==0){
-    printf("%s field is not present in BMD File", CreationDateTime);
-  }
-  if(m6==0){
-    printf("%s field is not present in BMD File", Signature);
-  }
-  if(m7==0){
-    printf("%s field is not present in BMD File", ReferenceID);
-  }
-  if(m8==0){
-    printf("%s field is not present in BMD File", Payload);
-  }
-  if(m1==1 && m2==1 && m3==1 && m4==1 && m5==1 && m6==1 && m7==1 && m8==1) 
-    printf("All mandatory fields are present in BMD\n");
-  else exit(1);
-  xmlFreeDoc(doc);
  
-  xmlCleanupParser();
-
   char  query[1000]="SELECT route_id FROM routes where sender='";
   strcat(query,Sender);
   strcat(query,"' and destination='");
@@ -184,24 +66,21 @@ int main(){
   if (mysql_query(conn, query)) 
   {
      fprintf(stderr, "%s\n", mysql_error(conn));
-     exit(1);
+     return 0;
   }
   
   MYSQL_RES *result = mysql_store_result(conn);
   
-  if (!mysql_fetch_row(result)) 
-  {
-      printf( "For the received Sender, Destination, Message Type there are no  active route record present in the routes table \n");
-      exit(1);
-  }
+ 
   int num_fields = mysql_num_fields(result);
 
   char query2[1000]="";
   char query3[1000]="";
-
+  int k=-1; int p=-1; int q=-1;
   while ((row = mysql_fetch_row(result))) 
-  { 
-      for(int i = 0; i < num_fields; i++) 
+  {   int i,j;
+      k++;
+      for( i = 0; i < num_fields; i++) 
       {   
           
           printf("route id for the received Sender, Destination, Message Type : %s \n", row[i] ? row[i] : "NULL"); 
@@ -215,39 +94,32 @@ int main(){
           if (mysql_query(conn, query2)) 
           {
             fprintf(stderr, "%s\n", mysql_error(conn));
-            exit(1);
+            return 0;
           }
   
           MYSQL_RES *result2 = mysql_store_result(conn);
            
-         if (!mysql_fetch_row(result2)) 
-          {
-                printf( "For this route id there are no record present in the transport_config table \n");
-                exit(1);
-          }
+         
           if (mysql_query(conn, query3)) 
           {
             fprintf(stderr, "%s\n", mysql_error(conn));
-            exit(1);
+            return 0;
           }
   
           MYSQL_RES *result3 = mysql_store_result(conn);
   
-           if (!mysql_fetch_row(result3)) 
-          {
-                printf( "For this route id there are no record present in the transform_config table \n");
-                exit(1);
-          }
+           
+
            while ((row = mysql_fetch_row(result2))) 
-           { 
-                for(int j = 0; j < mysql_num_fields(result2); j++) 
+           {    p++;
+                for( j = 0; j < mysql_num_fields(result2); j++) 
                 {   
                     printf("transport_config id for this route id is : %s \n", row[j] ? row[j] : "NULL"); 
                 }
            }
            while ((row = mysql_fetch_row(result3))) 
-           { 
-                for(int j = 0; j < mysql_num_fields(result3); j++) 
+           {    q++;
+                for( j = 0; j < mysql_num_fields(result3); j++) 
                 {   
                     printf("transform_config id for this route id is : %s \n", row[j] ? row[j] : "NULL"); 
                 }
@@ -257,11 +129,33 @@ int main(){
       } 
 
   }
-  
+   if (k==-1) 
+  {
+      printf( "For the received Sender, Destination, Message Type there are no  active route record present in the routes table \n");
+      return 0;
+  }
+  if (p==-1) 
+  {
+     printf( "For this route id there are no record present in the transport_config table \n");
+     return 0;
+  }
+  if (q==-1) 
+  {
+     printf( "For this route id there are no record present in the transform_config table \n");
+     return 0;
+  }
   mysql_free_result(result);
   mysql_close(conn);
   
-  exit(0);
+  return 1;
 
   
+}
+
+int main(){
+   char * file="bmd.xml";
+   int x=validate_bmd(file);
+   return 0;
+
+
 }
