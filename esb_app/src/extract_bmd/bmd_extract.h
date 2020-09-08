@@ -10,19 +10,8 @@
 parses xml file in tree form using libxml and extracts envelope fields and payload from it.
 how to run:-
 gcc -Wall -I/usr/include/libxml2 -o test bmd_extract.c -lxml2*/
+ 
 
-struct map {
-  char * key;
-  char * value;
-};
-
-int is_leaf(xmlNode * node) {
-  xmlNode * child = node -> children;
-  while (child) {
-    if (child -> type == XML_ELEMENT_NODE) return 0;
-
-    child = child -> next;
-  }
-
-  return 1;
-}
+void extract_bmd (char * filename,  char* fields[]);
+//extracts bmd file and puts the envelop and payload in array fields in order message id, message type, sender, destination, creation date time,
+//sign ,reference id, payload , user properties
