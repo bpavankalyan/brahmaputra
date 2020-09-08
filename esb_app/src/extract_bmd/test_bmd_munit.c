@@ -84,21 +84,3 @@ int main(int argc,
   return munit_suite_main( & test_suite, NULL, argc, NULL);
 }
 
-/*int main(){
-  
-  char * filename="bmd.xml";
-  char * fields[10];
-  extract_bmd(filename, fields); 
-    
-  printf("MessageID = %s\n",fields[0]);
-  printf("MessageType = %s\n",fields[1]);
-  printf("Sender = %s\n",fields[2]);
-  printf("Destination = %s\n",fields[3]);
-  printf("CreationDateTime = %s\n",fields[4]);
-  printf("Signature = %s\n",fields[5]);
-  printf("ReferenceID = %s\n",fields[6]);
-  printf("Payload = %s\n",fields[7]);
-  printf("UserProperties = %s\n",fields[8]);
-  exit (0);  
-}
-*/
