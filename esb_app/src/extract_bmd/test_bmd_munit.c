@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-#include "bmd_extract.c"
+#include "bmd_extract.h"
 
 #include "../test/munit.h"
 
