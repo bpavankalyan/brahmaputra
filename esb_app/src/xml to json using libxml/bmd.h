@@ -2,8 +2,6 @@
  * @brief Contains:
  * 1.Extracting data from BMD
  * 2.Conversion from Xml to Json
- * 3.Declarations of XML(BMD) handling functions
- * 
  */
 
 #include <stdio.h>
