@@ -2,8 +2,7 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <string.h>
-#include "bmd_extract.c"
-
+#include "bmd_extract.h"
 /* 
 parses xml file in tree form using libxml and extracts envelope fields and payload from it.
 how to run:-
