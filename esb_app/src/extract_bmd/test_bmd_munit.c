@@ -9,7 +9,7 @@
 /* 
 munit testing
 how to run:-
-gcc -Wall -I/usr/include/libxml2  -o hello test_bmd.c   -lxml2 ${INCLUDE} ../test/munit.c
+ gcc -Wall -I/usr/include/libxml2  -o hello test_bmd_munit.c bmd_extract.c  -lxml2 ${INCLUDE} ../test/munit.c
 
 */
 
