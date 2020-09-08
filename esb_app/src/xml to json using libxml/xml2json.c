@@ -35,7 +35,7 @@ void xml2json(xmlNode * node, int indent_len, char json[]) {
   int i = 0;
   while (node) {
     if (node -> type == XML_ELEMENT_NODE) {
-      if (is_leaf(node)) {
+      if (is_leaf2(node)) {
         i++;
 
         sprintf(s, "%*c\"%s\": \"%s\"", indent_len * 2, ' ', node -> name, xmlNodeGetContent(node));
