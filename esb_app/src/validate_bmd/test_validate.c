@@ -1,5 +1,6 @@
 /*
-gcc -Wall -I/usr/include/libxml2  -o test  bmd_validate.c  `mysql_config --cflags --libs` -lxml2
+gcc -Wall -I/usr/include/libxml2  -o hello  test_validate.c bmd_validate.c ../extract_bmd/bmd_extract.c  -lxml2  `mysql_config --cflags --libs` 
+
 The validation will be done mainly for the envelope part of the BMD.
 1. The mandatory values (Sender, Destination, Message Type, etc.) must be present in the
 received BMD.
@@ -13,7 +14,7 @@ types, etc
 */
 
 #include <stdio.h>
-#include "bmd_validate.c"
+#include "bmd_validate.h"
 
 
 int main(){
