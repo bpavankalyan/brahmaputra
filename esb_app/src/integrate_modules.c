@@ -1,5 +1,10 @@
-#include "xml to json using libxml/xml2json.c"
-#include "validate_bmd/bmd_validate.c"
+/*
+gcc -Wall -I/usr/include/libxml2  -o hello  integrate_modules.c    
+validate_bmd/bmd_validate.c extract_bmd/bmd_extract.c  xml_to_json_using_libxml/xml2json.c  -lxml2  `mysql_config --cflags --libs`
+*/
+
+#include "xml to json using libxml/xml2json.h"
+#include "validate_bmd/bmd_validate.h"
 
 int main(){
 
