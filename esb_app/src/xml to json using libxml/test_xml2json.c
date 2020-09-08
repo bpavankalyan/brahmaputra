@@ -8,7 +8,11 @@
 
 #include <string.h>
 
-#include "xml2json.c"
+#include "xml2json.h"
+
+/* 
+takes in xml file and uses libxml to convert it in a tree like data structure and then prints in json format using libxml.
+*/
 
 int main(){
   char* input="bmd.xml";
