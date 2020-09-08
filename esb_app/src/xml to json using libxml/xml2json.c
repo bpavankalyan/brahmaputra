@@ -10,7 +10,6 @@
 
 #include<string.h>
 
-#include "../extract_bmd/bmd_extract.c"
 
 /* 
 takes in xml file and uses libxml to convert it in a tree like data structure and then prints in json format using libxml.
@@ -18,6 +17,18 @@ how to run:-
 gcc -Wall -I/usr/include/libxml2 -o xml2json xml2json.c -lxml2*/
 
 //checks whether a node is leaf node
+
+int is_leaf2(xmlNode * node) {
+  xmlNode * child = node -> children;
+  while (child) {
+    if (child -> type == XML_ELEMENT_NODE) return 0;
+
+    child = child -> next;
+  }
+
+  return 1;
+}
+
 
 void xml2json(xmlNode * node, int indent_len, char json[]) {
   char s[100];
