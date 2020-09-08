@@ -21,9 +21,9 @@ types, etc
 
 #include <mysql.h>
 
-#include "../extract_bmd/bmd_extract.c"
+#include "../extract_bmd/bmd_extract.h"
 
-
+//takes in name of bmd file as input and returns 1 if valid bmd else returns 0
 int validate_bmd(char * bmd) {
 
   char * filename = bmd;
@@ -50,6 +50,7 @@ int validate_bmd(char * bmd) {
   char * Sender = fields[2];
   char * Destination = fields[3];
 
+  //check if route id is present for given bmd message
   char query[1000] = "SELECT route_id FROM routes where sender='";
   strcat(query, Sender);
   strcat(query, "' and destination='");
