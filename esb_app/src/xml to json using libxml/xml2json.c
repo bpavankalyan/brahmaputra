@@ -3,9 +3,8 @@
 #include <libxml/tree.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include<string.h>
-#include "../extract_bmd/bmd_extract.c"
-
+#include <string.h>
+#include "bmd.h"
 /* 
 takes in xml file and uses libxml to convert it in a tree like data structure and then prints in json format using libxml.
 how to run:-
@@ -14,11 +13,20 @@ gcc -Wall -I/usr/include/libxml2 -o xml2json xml2json.c -lxml2*/
 
 //checks whether a node is leaf node
  
-
-
-
+int is_leaf(xmlNode * node)
+{
+  xmlNode * child = node->children;
+  while(child)
+  {
+    if(child->type == XML_ELEMENT_NODE) return 0;
  
-void xml2json(xmlNode * node, int indent_len, char json[])
+    child = child->next;
+  }
+ 
+  return 1;
+}
+ 
+bmd* xml2json(xmlNode * node, int indent_len, char json[])
 {
     char  s[100];
     int i=0;
@@ -58,12 +66,9 @@ void xml2json(xmlNode * node, int indent_len, char json[])
         
         node = node->next;
     }
-    //if(i>1)printf("%*c,\n", indent_len*2 -1,'}');
-    //else printf("%*c\n", indent_len*2 -1,'}');
-
 }
  
-void xml_to_json(char* xml_file, char* json_file){
+  bmd *xml_to_json(char* xml_file, char* json_file){
   char json[1000]="{\n";
   xmlDoc *doc = NULL;
   xmlNode *root_element = NULL;
@@ -87,18 +92,17 @@ void xml_to_json(char* xml_file, char* json_file){
   xmlFreeDoc(doc);
   xmlCleanupParser();
 
-  printf("file generated successfully\n");  
+  
 
 }
-/*
- 
+
 int main(){
   char* input="bmd.xml";
   char * output="bmd2.json";
-  printf("%s generated successfully", output);
-  xml_to_json(input, output);
+  bmd *xyz;
+  xyz=xml_to_json(input, output);
+
   return 0;
 
 
 }
-*/
