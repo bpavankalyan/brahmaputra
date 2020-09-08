@@ -1,5 +1,5 @@
-#include "xml to json using libxml/xml2json.h"
-#include "validate_bmd/bmd_validate.h"
+#include "xml to json using libxml/xml2json.c"
+#include "validate_bmd/bmd_validate.c"
 
 int main(){
 
