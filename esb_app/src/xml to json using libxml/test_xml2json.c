@@ -13,7 +13,7 @@
 int main(){
   char* input="bmd.xml";
   char * output="bmd2.json";
-  printf("%s generated successfully", output);
+  printf("%s generated successfully\n", output);
   xml_to_json(input, output);
   return 0;
 
