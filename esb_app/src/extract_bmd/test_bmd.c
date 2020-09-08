@@ -2,7 +2,6 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <string.h>
-#include "bmd_extract.h"
 #include "bmd_extract.c"
 
 /* 
