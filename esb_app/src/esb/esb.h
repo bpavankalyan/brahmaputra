@@ -1,9 +1,15 @@
 int process_esb_request(char* bmd_file_path);
 
 typedef struct {
-    char* sender_id;
-    char* destination_id;
-    char* message_type;
+    
+    char* MessageID;
+    char* MessageType; 
+    char* Sender; 
+    char* Destination;
+    char* CreationDateTime;
+    char* Signature;
+    char* ReferenceID;
+    char* Payload;
     // TODO: Other fields
 } bmd_envelop;
 
