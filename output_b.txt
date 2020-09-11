@@ -1,0 +1,78 @@
+[parent]: running on https://127.0.0.1:8888
+[parent]: privsep: no root path set, using working directory
+[parent]: privsep: will not change user
+[parent]: privsep: no keymgr_root set, using 'root` directory
+[parent]: privsep: will not chroot
+[parent]: kore is starting up
+
+%%%%% kore_parent_configure
+[wrk 2]: worker 2 started (cpu#0)
+[wrk 2]: parent gone, shutting down
+[parent]: running on https://127.0.0.1:8888
+[parent]: privsep: no root path set, using working directory
+[parent]: privsep: will not change user
+[parent]: privsep: no keymgr_root set, using 'root` directory
+[parent]: privsep: will not chroot
+[parent]: kore is starting up
+
+%%%%% kore_parent_configure
+[wrk 1]: worker 1 started (cpu#1)
+[wrk 1]: parent gone, shutting down
+[parent]: running on https://127.0.0.1:8888
+[parent]: privsep: no root path set, using working directory
+[parent]: privsep: will not change user
+[parent]: privsep: no keymgr_root set, using 'root` directory
+[parent]: privsep: will not chroot
+[parent]: kore is starting up
+
+%%%%% kore_parent_configure
+[keymgr]: no rand_file location specified
+[keymgr]: (re)loading certificates and keys
+[keymgr]: key manager started
+[keymgr]: cleaning up keys
+[keymgr]: parent gone, shutting down
+[parent]: running on https://127.0.0.1:8888
+[parent]: privsep: no root path set, using working directory
+[parent]: privsep: will not change user
+[parent]: privsep: no keymgr_root set, using 'root` directory
+[parent]: privsep: will not chroot
+[parent]: kore is starting up
+
+%%%%% kore_parent_configure
+Checking for new requests in esb_requests table.
+Applying transformation and transporting steps.
+Sleeping for 5 seconds.
+Checking for new requests in esb_requests table.
+Applying transformation and transporting steps.
+Sleeping for 5 seconds.
+Checking for new requests in esb_requests table.
+Applying transformation and transporting steps.
+Sleeping for 5 seconds.
+Checking for new requests in esb_requests table.
+Applying transformation and transporting steps.
+Sleeping for 5 seconds.
+Checking for new requests in esb_requests table.
+Applying transformation and transporting steps.
+Sleeping for 5 seconds.
+Checking for new requests in esb_requests table.
+Applying transformation and transporting steps.
+Sleeping for 5 seconds.
+Checking for new requests in esb_requests table.
+Applying transformation and transporting steps.
+Sleeping for 5 seconds.
+Checking for new requests in esb_requests table.
+Applying transformation and transporting steps.
+Sleeping for 5 seconds.
+Checking for new requests in esb_requests table.
+Applying transformation and transporting steps.
+Sleeping for 5 seconds.
+Checking for new requests in esb_requests table.
+Applying transformation and transporting steps.
+Sleeping for 5 seconds.
+[parent]: server shutting down
+[parent]: waiting for workers to drain and shutdown
+[parent]: worker 1 (2270)-> status 0
+[parent]: worker 2 (2271)-> status 0
+[parent]: worker 0 (2269)-> status 0
+>>>> kore_parent_teardown
+[parent]: goodbye
