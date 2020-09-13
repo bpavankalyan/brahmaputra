@@ -24,11 +24,9 @@ types, etc
 #include "../extract_bmd/bmd_extract.h"
 
 //takes in name of bmd file as input and returns 1 if valid bmd else returns 0
-int validate_bmd(char * bmd) {
+int validate_bmd(char * MessageType, char* Sender, char* Destination) {
 
-  char * filename = bmd;
-  char * fields[10];
-  extract_bmd(filename, fields);
+  
   MYSQL * conn;
 
   MYSQL_ROW row;
@@ -46,9 +44,7 @@ int validate_bmd(char * bmd) {
     return 0;
   }
 
-  char * MessageType = fields[1];
-  char * Sender = fields[2];
-  char * Destination = fields[3];
+  
 
   //check if route id is present for given bmd message
   char query[1000] = "SELECT route_id FROM routes where sender='";
