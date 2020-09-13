@@ -21,7 +21,6 @@ types, etc
 
 #include <mysql.h>
 
-#include "../extract_bmd/bmd_extract.h"
 
 //takes in name of bmd file as input and returns 1 if valid bmd else returns 0
 int validate_bmd(char * MessageType, char* Sender, char* Destination) {
