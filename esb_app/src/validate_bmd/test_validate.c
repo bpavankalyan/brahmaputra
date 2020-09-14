@@ -14,13 +14,18 @@ types, etc
 */
 
 #include <stdio.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#include <string.h>
 #include "bmd_validate.h"
+#include "../extract_bmd/bmd_extract.h"
 
 
 int main(){
-   char * file="bmd.xml";
-   int x=validate_bmd(file);
-   return 0;
-
-
-}
+  
+  char * filename="bmd.xml";
+  char * fields[10];
+  extract_bmd(filename, fields); 
+  int X=validate_bmd(fields[1],fields[2],fields[3]);
+  return 0;
+  }
