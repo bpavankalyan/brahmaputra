@@ -1,0 +1,14 @@
+All mandatory fields are present in BMD
+MessageID = M5
+MessageType = Bal
+Sender = 
+Destination = 
+CreationDateTime = 2020-08-12T05:18:00+00001
+Signature = S7
+ReferenceID = R7
+UserProperties = 
+Value15
+Value25
+
+Payload = 001-01-12347
+

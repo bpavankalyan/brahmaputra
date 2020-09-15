@@ -1,0 +1,14 @@
+All mandatory fields are present in BMD
+MessageID = A9ECAEF2
+MessageType = CreditReport
+Sender = 756E2EAA
+Destination = 6393F82F
+CreationDateTime = 2020-08-12T05:18:00+0000
+Signature = 63f5f61f
+ReferenceID = INV-PROFILE-889712
+UserProperties = 
+Value1
+Value2
+
+Payload = 001-01-1234
+

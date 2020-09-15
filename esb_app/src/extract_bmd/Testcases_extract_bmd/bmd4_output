@@ -1,0 +1,14 @@
+All mandatory fields are present in BMD
+MessageID = M4
+MessageType = Bal
+Sender = S4
+Destination = D4
+CreationDateTime = 2020-08-12T05:18:00+00001
+Signature = S4
+ReferenceID = R4
+UserProperties = 
+Value15
+Value25
+
+Payload = 001-01-12347
+
