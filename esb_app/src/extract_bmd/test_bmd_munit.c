@@ -16,7 +16,7 @@ how to run:-
 static MunitResult
 test_bmd_extract(const MunitParameter params[], void * fixture) {
 
-  char * filename = "Testcases_extract_bmd/bmd.xml";
+  char * filename = "bmd.xml";
   char * fields[20];
   extract_bmd(filename, fields);
   char * MessageID = "A9ECAEF2-107A-4452-9553-043B6D25386E";
