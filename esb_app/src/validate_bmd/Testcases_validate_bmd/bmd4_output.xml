@@ -1,0 +1,6 @@
+All mandatory fields are present in BMD
+route id for the received Sender, Destination, Message Type : 12 
+transport_config id for this route id is : 1 
+transform_config id for this route id is : 5 
+validation part done
+
