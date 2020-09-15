@@ -1,9 +1,9 @@
 <BMD>
 <Envelop>
 <MessageID>M6</MessageID>
-<MessageType>Bal</MessageType>
-<Sender>S</Sender>
-<Destination>D</Destination>
+<MessageType>BulkPurchase</MessageType>
+<Sender>8790-CC4-4CEB78</Sender>
+<Destination>89F42F-4687-433D-AA23-1966330381FE</Destination>
 <CreationDateTime>2020-08-12T05:18:00+00001</CreationDateTime>
 <Signature></Signature>
 <ReferenceID></ReferenceID>
@@ -14,4 +14,5 @@
 </Envelop>
 <Payload>001-01-12347</Payload>
 </BMD>
+
 
