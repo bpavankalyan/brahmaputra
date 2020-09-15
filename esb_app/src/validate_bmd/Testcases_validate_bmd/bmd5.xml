@@ -1,9 +1,9 @@
 <BMD>
 <Envelop>
 <MessageID>M5</MessageID>
-<MessageType>BulkPurchase</MessageType>
-<Sender>8790-CC4-4CEB78</Sender>
-<Destination>D5</Destination>
+<MessageType>CreditReport</MessageType>
+<Sender>8567E2EAA-2D5B-8BC0-ACC4-4CEB669408DA</Sender>
+<Destination>7896F87H-3567-BBA5-3265781FE</Destination>
 <CreationDateTime>2020-08-12T05:18:00+00001</CreationDateTime>
 <Signature>S5</Signature>
 <ReferenceID>R5</ReferenceID>
@@ -14,4 +14,3 @@
 </Envelop>
 <Payload>001-01-12347</Payload>
 </BMD>
-
