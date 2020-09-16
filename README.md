@@ -10,3 +10,4 @@ tasks done: -
 6) module to insert bmd entries in esb_request table  
 7) integrated our modules with esb_endpoint folder
 8) bmd processing using kore
+9) http based transport handling using curl
