@@ -36,7 +36,7 @@ int is_bmd_valid(bmd b)
     return valid;
 }
 
-int queue_the_request(bmd b)
+int queue_the_request(bmd b,char* bmd_file_path)
 {
      // 1 => OK, -1 => Error cases
         char * fields[10];
@@ -48,6 +48,7 @@ int queue_the_request(bmd b)
         fields[4] = b.envelop.CreationDateTime;
         fields[5] = b.envelop.Signature;
         fields[6] = b.envelop.ReferenceID;
+        fields[7]= bmd_file_path;
 
     /** 
      * TODO: Insert the envelop data into esb_requests table,
@@ -84,7 +85,7 @@ int process_esb_request(char* bmd_file_path) {
     else
     {
         // Step 3:
-        status = queue_the_request(b);
+        status = queue_the_request(b,  bmd_file_path);
     }
     
     return status;
