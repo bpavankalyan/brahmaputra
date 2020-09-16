@@ -4,7 +4,7 @@
 
 #include "esb.h"
 
-#include <mysql.h>
+#include <mysql/mysql.h>
 
 /**
  * TODO: Implement the proper logic as per ESB specs.
@@ -20,7 +20,7 @@ void * poll_database_for_new_requets(void * vargp) {
     
      */
     //start
-
+    //query esb_request table
     MYSQL * conn;
 
     MYSQL_ROW row;
@@ -50,6 +50,7 @@ void * poll_database_for_new_requets(void * vargp) {
     MYSQL_RES * result0 = mysql_store_result(conn);
     int num_fields = mysql_num_fields(result0);
     int set = 0;
+    printf("checking for available request\n");
     while ((row = mysql_fetch_row(result0))) {
       set = 1;
       Sender = row[0];
@@ -57,18 +58,25 @@ void * poll_database_for_new_requets(void * vargp) {
       MessageType = row[2];
       data_location = row[3];
       id = row[4];
-    }
 
+      /* now  mark the fetched esb request as processing*/
+
+      char query_s[1000] = "UPDATE esb_request SET status='PROCESSING' WHERE id='";
+      strcat(query_s, id);
+      strcat(query_s, "'");
+      if (mysql_query(conn, query_s)) {
+        fprintf(stderr, "%s\n", mysql_error(conn));
+        return 0;
+      }
+    }
+      mysql_free_result(result0);
     //stop
     //fetched the request
 
-    /**
-     * Step 3:
-     */
+    //if found a new request set will be 1
     if (set == 1) {
       /**
        * Found a new request, so we will now process it.
-       * See the ESB specs to find out what needs to be done
        * in this step. Basically, you will be doing:
        * 1. Find if there is any transformation to be applied to
        *    the payload before transporting it to destination.
@@ -79,8 +87,8 @@ void * poll_database_for_new_requets(void * vargp) {
        *    of this step.
        * 5. Cleanup
        */
-
-      //start
+      printf("hello");
+      //get the route id corresponding to sender, destination, message type
       char * route_id;
       char * transport_id;
       char * transform_id;
@@ -108,6 +116,7 @@ void * poll_database_for_new_requets(void * vargp) {
 
       char query2[1000] = "";
       char query3[1000] = "";
+      //get the transport config key, value and transform config key, value corresponding to the route id
       while ((row = mysql_fetch_row(result))) {
         int i, j;
         for (i = 0; i < num_fields; i++) {
@@ -142,22 +151,55 @@ void * poll_database_for_new_requets(void * vargp) {
             transform_key = row[0];
             transform_value = row[1];
           }
+           mysql_free_result(result2);
+           mysql_free_result(result3);
 
         }
 
       }
-      printf("%s", transform_key);
+    
+
+        mysql_free_result(result);
       //stored transport transform values
+      //printf("%s",transport_key);
+      
+      
+      char * fields[1];  //url
+      apply_transform(transform_key, transport_key, transport_value, data_location,fields);
 
-      //stop
+     // char* transformed_string="https://ifsc.razorpay.com/HDFC0CAGSBK";
+     if (!strcmp(transport_key, "API_URL")) {
+        printf("sending http request");
+        
+        http_request(fields[0]);
 
-      printf("Applying transformation and transporting steps.\n");
+
+      }
+
+      //char * url = "https://ifsc.razorpay.com/HDFC0CAGSBK";
+
+      printf("Applied transformation and transporting steps.\n");
+
+      //set the esb request as DONE in esb request table
+      char query_d[1000] = "UPDATE esb_request SET status='DONE' WHERE id='";
+      strcat(query_d, id);
+      strcat(query_d, "'");
+      if (mysql_query(conn, query_d)) {
+        fprintf(stderr, "%s\n", mysql_error(conn));
+        return 0;
+      }
+
+      mysql_close(conn);
+
+      printf("DONE\n");
+
+      /**
+       * Sleep for polling interval duration, say, 5 second.
+       * DO NOT hard code it here!
+       */
+     
     }
-    /**
-     * Sleep for polling interval duration, say, 5 second.
-     * DO NOT hard code it here!
-     */
-    printf("Sleeping for 5 seconds.\n");
-    sleep(5);
+     printf("Sleeping for 5 seconds.\n");
+     sleep(5);
   }
 }
