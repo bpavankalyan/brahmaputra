@@ -33,7 +33,7 @@ size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s)
   return size*nmemb;
 }
 
-int main(void)
+char*  http_request(char* url)
 {
   CURL *curl;
   CURLcode res;
@@ -42,8 +42,10 @@ int main(void)
   if(curl) {
     struct string s;
     init_string(&s);
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
 
-    curl_easy_setopt(curl, CURLOPT_URL, "https://ifsc.razorpay.com/HDFC0CAGSBK");
+    curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
     res = curl_easy_perform(curl);
@@ -52,12 +54,14 @@ int main(void)
 	fprintf(stderr,"curl failed %s\n",curl_easy_strerror(res));
    }
     printf("%s\n", s.ptr);
-    free(s.ptr);
+    
 
     /* always cleanup */
     curl_easy_cleanup(curl);
+    return s.ptr;
   }
-  return 0;
+   return NULL;
+  
 }
 
 
