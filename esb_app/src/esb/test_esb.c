@@ -5,7 +5,7 @@
 static MunitResult
 test_queue_the_request(const MunitParameter params[], void *fixture)
 {
-    bmd b = parse_bmd_xml("../Testcases/bmd5.xml");
+    bmd *b = parse_bmd_xml("../Testcases/bmd5.xml");
 
     munit_assert(queue_the_request(b,"../Testcases/bmd5.xml")==1);
     return MUNIT_OK;
