@@ -1,5 +1,4 @@
 int process_esb_request(char* bmd_file_path);
-int queue_the_request(bmd *b,char *file_path);
 
 
 typedef struct {
