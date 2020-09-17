@@ -25,7 +25,11 @@ void apply_transform(char * transform_type, char * transport_key, char * transpo
 
   } else if ((!strcmp(transform_type, "JSON")) && (!strcmp(transport_key, "HTTP"))) {
     printf("convert payload to json string\n");
-    /*TODO*/
+    printf("convert payload to json string\n");
+    char* json="output.json";
+    xml2json2(payload);
+    printf("\n %s created\n", json);
+
 
   } else {
     printf("No transformation needed\n");
