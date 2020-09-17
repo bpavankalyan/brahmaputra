@@ -95,6 +95,28 @@ void xml_to_json(char * xml_file, char * json_file) {
   printf("file generated successfully\n");
 
 }
+
+void xml2json2(char Pay[])
+{
+	char *filename="payload.json";
+
+        FILE *file;
+    	file = fopen(filename,"w");
+    	
+    	if(file == NULL) 
+    	{
+        	printf("file opening failed");
+        	exit(0);
+    	}
+    	
+    	fprintf(file,"{\n \"Payload\":\"%s\"\n}",Pay);
+    	
+    	printf("\nPayload json File created\n");
+    
+
+    	fclose(file);
+      
+}
 /*
  
 int main(){
