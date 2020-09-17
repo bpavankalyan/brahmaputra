@@ -18,7 +18,7 @@ test_bmd_extract(const MunitParameter params[], void * fixture) {
 
   char * filename = "bmd.xml";
   char * fields[20];
-  extract_bmd(filename, fields);
+  extract_bmd(filename, fields); /*this is explained in extract_bmd/bmd_extract.c */
   char * MessageID = "A9ECAEF2-107A-4452-9553-043B6D25386E";
   char * MessageType = "CreditReport";
   char * Sender = "756E2EAA-1D5B-4BC0-ACC4-4CEB669408DA";
