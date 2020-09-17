@@ -92,51 +92,51 @@ test_bmd_validate6(const MunitParameter params[], void * fixture) {
 MunitTest test_suite_tests[] = {
   {
     (char * )
-    "/example/bmd_validate1",/* name */
-    test_bmd_validate1, /* test function */
+    "/example/bmd_validate1", /* name */
+    test_bmd_validate1,       /* test function */
+    NULL, NULL,
+    MUNIT_TEST_OPTION_NONE,   /* options */
+    NULL                      /* parameters */
+  },
+  {
+    (char * )
+    "/example/bmd_validate2",/*name */
+    test_bmd_validate2,/*test function */
     NULL, NULL,
     MUNIT_TEST_OPTION_NONE,/* options */
+    NULL /*parameters */
+  },
+  {
+    (char * )
+    "/example/bmd_validate3", /*name */
+    test_bmd_validate3,/* test function */
+    NULL, NULL,
+    MUNIT_TEST_OPTION_NONE, /* options */
     NULL /* parameters */
   },
   {
-    (char * )
-    "/example/bmd_validate2",
-    test_bmd_validate2,
+    (char * ) 
+    "/example/bmd_validate4", /* name */
+    test_bmd_validate4,      /* test function */
     NULL, NULL,
-    MUNIT_TEST_OPTION_NONE,
-    NULL
+    MUNIT_TEST_OPTION_NONE,  /* options */
+    NULL                     /* parameters */
   },
   {
     (char * )
-    "/example/bmd_validate3",
-    test_bmd_validate3,
-    NULL, NULL,
-    MUNIT_TEST_OPTION_NONE,
-    NULL
+    "/example/bmd_validate5", /*name */
+    test_bmd_validate5,        /* test function */
+    NULL, NULL,                
+    MUNIT_TEST_OPTION_NONE,    /* option */
+    NULL                        /* parameters */
   },
   {
     (char * )
-    "/example/bmd_validate4",
-    test_bmd_validate4,
-    NULL, NULL,
-    MUNIT_TEST_OPTION_NONE,
-    NULL
-  },
-  {
-    (char * )
-    "/example/bmd_validate5",
-    test_bmd_validate5,
-    NULL, NULL,
-    MUNIT_TEST_OPTION_NONE,
-    NULL
-  },
-  {
-    (char * )
-    "/example/bmd_validate6",
-    test_bmd_validate6,
-    NULL, NULL,
-    MUNIT_TEST_OPTION_NONE,
-    NULL
+    "/example/bmd_validate6", /* name */
+    test_bmd_validate6,       /* test function */
+    NULL, NULL,        
+    MUNIT_TEST_OPTION_NONE,   /* option */
+    NULL                      /* parameters */
   },
    /* Mark the end of the array with an entry where the test
    * function is NULL */
