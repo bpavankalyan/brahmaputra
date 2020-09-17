@@ -43,7 +43,8 @@ int insert_esb_request (char * fields[]){
   char * Signature=fields[5];
   char * ReferenceID=fields[6];
   char * Payload=fields[7];
-
+	
+/*insert the fields into esb request table*/
   char  query[1000]="INSERT INTO                                  \
 esb_request(sender_id,dest_id,message_type,reference_id,     \
 message_id,received_on,status, status_details, data_location)  \
