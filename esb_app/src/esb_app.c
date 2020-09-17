@@ -107,10 +107,6 @@ static void _mkdir(const char *dir) {
 char *create_work_dir_for_request()
 {
 	kore_log(LOG_INFO, "Creating the temporary work folder.");
-	/**
-	 * TODO: Create a temporary folder in the current directory.
-	 * Its name should be unique to each request.
-	 */
         char *temp_path = malloc(PATH_MAX * sizeof(char));
 	time_t now = time(NULL);
 	srand(now);
@@ -170,11 +166,7 @@ save_bmd(struct http_request *req)
 
 	/* While we have data from http_file_read(), write it. */
 	/* Alternatively you could look at file->offset and file->length. */
-	/**
-	 * TODO: The BMD should be saved at a proper unique file path.
-	 * That path then should be returned to the caller for allowing
-	 * further processing by the ESB.
-	 */
+	
 	for (;;)
 	{
 		ret = http_file_read(file, buf, sizeof(buf));
