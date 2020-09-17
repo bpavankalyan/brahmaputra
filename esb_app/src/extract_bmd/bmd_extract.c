@@ -1,3 +1,11 @@
+
+/*
+section: Tree
+synopsis: Navigates a tree to print element names
+purpose: Parse a file to a tree, use xmlDocGetRootElement() to
+         get the root element, then walk the document and print
+         all the element name in document order.*/
+
 #include <stdio.h>
 
 #include <libxml/parser.h>
