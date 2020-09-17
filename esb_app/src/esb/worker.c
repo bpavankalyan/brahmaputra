@@ -11,9 +11,8 @@
  */
 void * poll_database_for_new_requets(void * vargp) {
   // Step 1: Open a DB connection
-  int i = 0;
-  while (i < 99) {
-    i++;
+  int i = 1;
+  while (i ==1) {
     /**
      * Step 2: Query the esb_requests table to see if there
      * are any newly received BMD requets.
