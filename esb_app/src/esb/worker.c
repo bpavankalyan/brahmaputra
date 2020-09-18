@@ -174,9 +174,12 @@ void * poll_database_for_new_requets(void * vargp) {
 
 
       }
-
+      
       //char * url = "https://ifsc.razorpay.com/HDFC0CAGSBK";
+       else if (!strcmp(transport_key, "SMTP")) {
+         int i=sendMail("riyatoteja1998@gmail.com", "/home/riya/esb_endpoint/payload.json");
 
+      }
       printf("Applied transformation and transporting steps.\n");
 
       //set the esb request as DONE in esb request table
