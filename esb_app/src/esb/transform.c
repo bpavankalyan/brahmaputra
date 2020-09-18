@@ -7,29 +7,29 @@
 #include <memory.h>
 
 void apply_transform(char * transform_type, char * transport_key, char * transport_value, char * data_location,char* fields2[]) {
-
+  /*char * fields[10];
+  extract_bmd(data_location, fields); 
+  char * payload = fields[7];*/
+  char * payload = "HDFC0CAGSBK";
+  char payload2[1000];
+  strcpy(payload2,payload);
   if ((!strcmp(transform_type, ":IFSC_CODE")) && (!strcmp(transport_key, "API_URL"))) {
     printf("append payload to transport_value i.e. URL\n");
-    //get payload from data_location
-    //append and return it
-    char * fields[10];
-    extract_bmd(data_location, fields); 
-    char * payload = fields[7];
- 
-    char * str3 = (char *) malloc(1 + strlen(transport_value)+ strlen(payload) );
-    strcpy(str3, transport_value);
-    strcat(str3, payload);
-    printf("url : %s\n",str3);
-    char* str4=str3;
-    fields2[0]=str4;
+    
+    for(int i=0;i<strlen(payload2);i++){	
+        char ch = payload2[i];
+	strncat(transport_value, &ch, 1);
+    }
 
-  } else if ((!strcmp(transform_type, "JSON")) && (!strcmp(transport_key, "HTTP"))) {
-    printf("convert payload to json string\n");
+    fields2[0]=transport_value;
+    //printf("%s\n",fields2[0]);
+
+  } else if ((!strcmp(transform_type, "JSON")) && (!strcmp(transport_key, "SMTP"))) {
     printf("convert payload to json string\n");
     char* json="output.json";
     xml2json2(payload);
     printf("\n %s created\n", json);
-
+    
 
   } else {
     printf("No transformation needed\n");
