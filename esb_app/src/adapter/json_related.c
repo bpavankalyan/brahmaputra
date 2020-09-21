@@ -1,15 +1,11 @@
 #include <stdio.h>
-
 #include <libxml/parser.h>
-
 #include <libxml/tree.h>
-
 #include <sys/types.h>
-
 #include <unistd.h>
-
 #include<string.h>
-
+#include "adapter.h"
+#include <curl/curl.h>
 
 /* 
 takes in xml file and uses libxml to convert it in a tree like data structure and then prints in json format using libxml.
@@ -17,6 +13,8 @@ how to run:-
 gcc -Wall -I/usr/include/libxml2 -o xml2json xml2json.c -lxml2*/
 
 //checks whether a node is leaf node
+
+
 
 int is_leaf2(xmlNode * node) {
   xmlNode * child = node -> children;
@@ -96,27 +94,59 @@ void xml_to_json(char * xml_file, char * json_file) {
 
 }
 
-void xml2json2(char Pay[])
-{
-	char *filename="payload.json";
 
-        FILE *file;
-    	file = fopen(filename,"w");
+
+void* convert_to_json(void * Payload, void * name)
+{
+      char file_name[50] ;
+      sprintf(file_name,"output_%s.json",(char *) name);
+
+      FILE *file;
+    	file = fopen(file_name,"w");
     	
     	if(file == NULL) 
     	{
         	printf("file opening failed");
-        	exit(0);
+        	return "NO";
     	}
     	
-    	fprintf(file,"{\n \"Payload\":\"%s\"\n}",Pay);
+    	fprintf(file,"{\n \"Payload\":\"%s\"\n}",(char *) Payload);
     	
     	printf("\nPayload json File created\n");
     
 
     	fclose(file);
+    	
+    	return strdup(file_name);
       
 }
+
+
+ void * insert_to_json_file(void * content, void * name)
+ {
+      char file_name[50] ;
+      sprintf(file_name,"output_%s.json",(char *) name);
+
+      FILE *file;
+    	file = fopen(file_name,"w");
+    	
+    	if(file == NULL) 
+    	{
+        	printf("file opening failed");
+          return "NO";
+    	}
+    	
+       /* writing the content into json file*/	
+       fprintf(file, "\n%s\n", (char *) content);
+    	  
+       fclose(file);
+    	
+      return strdup(file_name);
+      
+}
+
+
+
 /*
  
 int main(){

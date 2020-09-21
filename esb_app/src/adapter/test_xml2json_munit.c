@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "../test/munit.h"
-#include "xml2json.c"
+#include "xml2json.h"
 
 
 /* 
@@ -83,8 +83,11 @@ MunitTest bmd_tests[] = {
      MUNIT_SUITE_OPTION_NONE /* options */
 };
 
+
+#if 0
 /* Run the the test suite */
 int main(int argc, const char *argv[])
 {
   return munit_suite_main(&suite, NULL, argc, NULL);
 }
+#endif

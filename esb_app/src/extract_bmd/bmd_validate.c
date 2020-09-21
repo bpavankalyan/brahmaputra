@@ -21,6 +21,8 @@ types, etc
 
 #include <mysql.h>
 
+#include "bmd.h"
+
 
 //takes in name of bmd file as input and returns 1 if valid bmd else returns 0
 int validate_bmd(char * MessageType, char* Sender, char* Destination) {
@@ -32,7 +34,7 @@ int validate_bmd(char * MessageType, char* Sender, char* Destination) {
 
   char * server = "localhost";
   char * user = "root";
-  char * password = "riya"; /* set me first */
+  char * password = "Pavan1999@"; /* set me first */
   char * database = "esb_db";
 
   conn = mysql_init(NULL);

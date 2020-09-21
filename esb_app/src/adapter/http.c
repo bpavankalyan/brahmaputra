@@ -33,8 +33,13 @@ size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s)
   return size*nmemb;
 }
 
-char*  http_request(char* url)
+void *  http_request(void* url,void * code)
 {
+  
+  char url_connect[100];
+  
+  sprintf(url_connect,"%s%s",(char *) url,(char *) code); 
+
   CURL *curl;
   CURLcode res;
 
@@ -45,14 +50,15 @@ char*  http_request(char* url)
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
 
-    curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_URL, url_connect);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
     res = curl_easy_perform(curl);
     if(res!=CURLE_OK)
-   {
+    {
 	fprintf(stderr,"curl failed %s\n",curl_easy_strerror(res));
-   }
+	return NULL;
+    }
     printf("%s\n", s.ptr);
     
 
@@ -63,5 +69,6 @@ char*  http_request(char* url)
    return NULL;
   
 }
+
 
 

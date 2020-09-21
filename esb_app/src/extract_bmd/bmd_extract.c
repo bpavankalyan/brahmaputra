@@ -14,6 +14,8 @@ purpose: Parse a file to a tree, use xmlDocGetRootElement() to
 
 #include <string.h>
 
+#include "bmd.h"
+
 
 /* 
 parses xml file in tree form using libxml and extracts envelope fields and payload from it.
@@ -174,10 +176,12 @@ void extract_bmd(char * filename, char * fields[]) {
   xmlCleanupParser();
 
 }
-/*
+
+
+
 int main(){
   
-  char * filename="bmd.xml";
+  char * filename="bmd1.xml";
   char * fields[10];
   extract_bmd(filename, fields); 
     
@@ -193,4 +197,4 @@ int main(){
   exit (0);  
 
 }
-*/
+

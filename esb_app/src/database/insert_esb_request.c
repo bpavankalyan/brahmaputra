@@ -4,11 +4,8 @@ gcc -Wall -I/usr/include/libxml2  -o test  insert_esb_request.c  `mysql_config -
 The data extracted from the BMD envelope element is inserted as a row in the esb_request table. The status column's value for the newly inserted row should be RECEIVED 
 */
 #include <stdio.h>
-#include <libxml/parser.h>
-#include <libxml/tree.h>
 #include <string.h>
-#include <mysql.h>
-#include "../extract_bmd/bmd_extract.h"
+#include <mysql/mysql.h>
  
 
  
@@ -21,9 +18,10 @@ int insert_esb_request (char * fields[]){
 	
   char *server = "localhost";
   char *user = "root";
-  char *password = "riya"; /* set me first */
+  char *password = "Pavan1999@"; /* set me first */
   char *database = "esb_db";
 	
+
   conn = mysql_init(NULL);
 	
   /* Connect to database */
@@ -49,6 +47,8 @@ int insert_esb_request (char * fields[]){
 esb_request(sender_id,dest_id,message_type,reference_id,     \
 message_id,received_on,status, status_details, data_location)  \
 VALUES( '";
+
+
   strcat(query,Sender);
   strcat(query,"','");
   strcat(query,Destination);
@@ -61,6 +61,9 @@ VALUES( '";
   strcat(query,"','");
   strcat(query,CreationDateTime); 
   strcat(query,"', 'RECEIVED','received successfully', 'Routes')");
+  
+
+
   printf("%s\n", query);
   if (mysql_query(conn, query)) 
   {
@@ -74,6 +77,14 @@ VALUES( '";
   return 1;
 
   
+}
+
+
+int main()
+{
+  char * fields[] = {"ASSSS","SSSS","ass888a","asasa88","2020-08-12T05:18:00+0000","ggg","RECEIVED","received successfully", "Routes"};
+  insert_esb_request(fields);
+  return 0;
 }
 
 

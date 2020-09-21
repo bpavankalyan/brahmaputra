@@ -298,7 +298,7 @@ test_bmd_extract7(const MunitParameter params[], void * fixture) {
   return MUNIT_OK;
 }
 /* Put all unit tests here. */
-MunitTest test_suite_tests[] = {
+MunitTest test_suite_tests1[] = {
   {
     (char * )
     "/example/bmd_extract",   /* name */
@@ -380,12 +380,14 @@ const MunitSuite test_suite = {
   (char * )
   "",
 
-  test_suite_tests,
+  test_suite_tests1,
 
   NULL,
   1,
   MUNIT_SUITE_OPTION_NONE
 };
+
+#if 0
 /* Run the the test suite */
 int main(int argc,
   const char * argv[]) {
@@ -399,6 +401,8 @@ int main(int argc,
 
 #include "../test/munit.h"
 
+#endif
+
 /* 
 munit testing
 how to run:-
@@ -406,6 +410,7 @@ how to run:-
 
 */
 /* Test function */
+#if 0
 static MunitResult
 test_bmd_extract(const MunitParameter params[], void * fixture) {
 
@@ -779,8 +784,10 @@ const MunitSuite test_suite = {
   1,
   MUNIT_SUITE_OPTION_NONE
 };
-/* Run the the test suite */
+/* Run the the test suite 
 int main(int argc,
   const char * argv[]) {
   return munit_suite_main( & test_suite, NULL, argc, NULL);
-}
+}*/
+
+#endif

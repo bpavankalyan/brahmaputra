@@ -26,7 +26,7 @@ void * poll_database_for_new_requets(void * vargp) {
 
     char * server = "localhost";
     char * user = "root";
-    char * password = "riya"; /* set me first */
+    char * password = "Pavan1999@"; /* set me first */
     char * database = "esb_db";
 
     conn = mysql_init(NULL);

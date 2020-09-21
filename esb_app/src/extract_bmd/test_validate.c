@@ -20,6 +20,7 @@ types, etc
 #include "bmd_validate.h"
 #include "../extract_bmd/bmd_extract.h"
 
+#if 0
 
 int main(){
   
@@ -29,3 +30,5 @@ int main(){
   int X=validate_bmd(fields[1],fields[2],fields[3]);
   return 0;
   }
+  
+#endif

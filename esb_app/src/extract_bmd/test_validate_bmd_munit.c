@@ -161,8 +161,11 @@ const MunitSuite test_suite = {
   1,
   MUNIT_SUITE_OPTION_NONE
 };
+
+#if 0
 /* Run the the test suite */
 int main(int argc,
   const char * argv[]) {
   return munit_suite_main( & test_suite, NULL, argc, NULL);
 }
+#endif

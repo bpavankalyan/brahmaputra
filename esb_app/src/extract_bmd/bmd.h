@@ -14,7 +14,7 @@ struct map{
   char*  key;
   char* value;
 };
-typedef struct dk1{
+typedef struct {
   char * MessageID;
   char * MessageType;
   char * Sender;
@@ -22,11 +22,21 @@ typedef struct dk1{
   char * CreationDateTime;
   char * Signature;
   char * ReferenceID;
-  char * Payload;
   char* UserProperties;
-}bmd;
+}bmd_envelope;
 
-bmd*extract_bmd (char * filename,  char* fields[]);
-bmd*xml_to_json(char* xml_file, char* json_file);
+typedef struct {
+   
+    bmd_envelope * envelope;
+    char * Payload;
+}bmd ;
+
+
+
+bmd * extract_bmd (char * filename,  char* fields[]);
+bmd * xml_to_json(char* xml_file, char* json_file);
+int validate_bmd(char * MessageType, char* Sender, char* Destination);
+void extract_bmd (char * filename,  char* fields[]);
+
 #endif
 

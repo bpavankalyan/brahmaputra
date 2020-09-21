@@ -3,9 +3,11 @@ gcc -Wall -I/usr/include/libxml2  -o hello  integrate_modules.c
 validate_bmd/bmd_validate.c extract_bmd/bmd_extract.c  xml_to_json_using_libxml/xml2json.c  -lxml2  `mysql_config --cflags --libs`
 */
 
-#include "xml to json using libxml/xml2json.h"
-#include "validate_bmd/bmd_validate.h"
+#include "../src/adapter/xml2json.h"
+#include "../src/validate_bmd/bmd_validate.h"
 
+
+#if 0
 int main(){
 
 //extract bmd file
@@ -34,3 +36,4 @@ int main(){
   else printf("invalid bmd\n");
    return 0;
 }
+#endif

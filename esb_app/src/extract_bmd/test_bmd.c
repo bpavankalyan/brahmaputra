@@ -7,7 +7,7 @@
 parses xml file in tree form using libxml and extracts envelope fields and payload from it.
 how to run:-
 gcc -Wall -I/usr/include/libxml2 -o test bmd_extract.c -lxml2*/
-
+/*
 
 int main(){
   
@@ -25,4 +25,4 @@ int main(){
   printf("Payload = %s\n",fields[7]);
   printf("UserProperties = %s\n",fields[8]);
   exit (0);  
-}
+}*/

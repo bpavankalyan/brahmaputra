@@ -24,7 +24,7 @@ test_bmd_validate(const MunitParameter params[], void * fixture) {
   return MUNIT_OK;
 }
 
-MunitTest test_suite_tests[] = {
+MunitTest test_suite_tests2[] = {
   {
     (char * )
     "/example/bmd_validate",
@@ -48,16 +48,18 @@ const MunitSuite test_suite = {
   (char * )
   "",
 
-  test_suite_tests,
+  test_suite_tests2,
 
   NULL,
   1,
   MUNIT_SUITE_OPTION_NONE
 };
 
+
+#if 0
 int main(int argc,
   const char * argv[]) {
   return munit_suite_main( & test_suite, NULL, argc, NULL);
 }
 
-
+#endif

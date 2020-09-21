@@ -9,6 +9,7 @@ The data extracted from the BMD envelope element is inserted as a row in the esb
 #include "insert_esb_request.h"
 
 
+#if 0
 int main(){
    char * filename="bmd.xml";
    char * fields[10];
@@ -18,3 +19,4 @@ int main(){
 
 
 }
+#endif
