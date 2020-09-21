@@ -3,7 +3,6 @@
 <BMD>
 <Envelop>
 <MessageID>M5</MessageID>
-<MessageType>Bal</MessageType>
 <Sender>S</Sender>
 <Destination>D</Destination>
 <CreationDateTime>2020-08-12T05:18:00+00001</CreationDateTime>

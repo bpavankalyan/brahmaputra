@@ -1,144 +1,122 @@
-/*
-gcc -Wall -I/usr/include/libxml2  -o test  bmd_validate.c  `mysql_config --cflags --libs` -lxml2
-The validation will be done mainly for the envelope part of the BMD.
-1. The mandatory values (Sender, Destination, Message Type, etc.) must be present in the
-received BMD.
-2. For the received {Sender, Destination, Message Type}, there should be an active route
-record present in the routes table (​ see here​ ).
-3. For the selected route record, there should be corresponding records present in
-transport_config and transform_config tables.
-4. We will also check for some upper limit on the payload size. For example, the payload
-larger than 5MB may not be allowed, or are allowed only for certain senders and message
-types, etc
-*/
 #include <stdio.h>
-
-#include <libxml/parser.h>
-
-#include <libxml/tree.h>
-
-#include <string.h>
-
-#include <mysql.h>
-
+#include <stdlib.h>
+#include <stdbool.h>
 #include "bmd.h"
+#include <string.h>
+#include <libxml/parser.h>
+#include "../database/database.h"
+
+/**********************************************************************************************
+*  @ brief : validating bmd request
+*  input : filepath output yes/no
+*  validating bmd request under 4 conditions
+* 1.The mandatory values (Sender, Destination, Message Type, etc.) must be present in the
+*    received BMD.
+* 2. For the received {Sender, Destination, Message Type}, there should be an active route
+*    record present in the routes table (​ see here​ ).
+* 3. For the selected route record, there should be corresponding records present in
+*    transport_config and transform_config tables.
+* 4. We will also check for some upper limit on the payload size. For example, the payload
+*    larger than 5MB may not be allowed, or are allowed only for certain senders and message
+*    types, etc. 
+*
+************************************************************************************************/
 
 
-//takes in name of bmd file as input and returns 1 if valid bmd else returns 0
-int validate_bmd(char * MessageType, char* Sender, char* Destination) {
 
-  
-  MYSQL * conn;
 
-  MYSQL_ROW row;
+int  is_bmd_valid(bmd  * bd)
+{
+   
 
-  char * server = "localhost";
-  char * user = "root";
-  char * password = "Pavan1999@"; /* set me first */
-  char * database = "esb_db";
+ // char * sender=bd->envelope->Sender;
+ // char * destination=bd->envelope->Destination;
+ // char * message_type= bd->envelope->MessageType;
+   
 
-  conn = mysql_init(NULL);
-
-  /* Connect to database */
-  if (!mysql_real_connect(conn, server, user, password, database, 0, NULL, 0)) {
-    fprintf(stderr, "%s\n", mysql_error(conn));
-    return 0;
-  }
-
-  
-
-  //check if route id is present for given bmd message
-  char query[1000] = "SELECT route_id FROM routes where sender='";
-  strcat(query, Sender);
-  strcat(query, "' and destination='");
-  strcat(query, Destination);
-  strcat(query, "' and  message_type='");
-  strcat(query, MessageType);
-  strcat(query, "' and is_active=1");
-  //printf("%s", query);
-  if (mysql_query(conn, query)) {
-    fprintf(stderr, "%s\n", mysql_error(conn));
-    return 0;
-  }
-
-  MYSQL_RES * result = mysql_store_result(conn);
-
-  int num_fields = mysql_num_fields(result);
-
-  char query2[1000] = "";
-  char query3[1000] = "";
-  int k = -1;
-  int p = -1;
-  int q = -1;
-  while ((row = mysql_fetch_row(result))) {
-    int i, j;
-    k++;
-    for (i = 0; i < num_fields; i++) {
-
-      printf("route id for the received Sender, Destination, Message Type : %s \n", row[i] ? row[i] : "NULL");
-      strcat(query2, "SELECT id FROM transport_config where route_id='");
-      strcat(query2, row[i]);
-      strcat(query2, "'");
-      strcat(query3, "SELECT id FROM transform_config where route_id='");
-      strcat(query3, row[i]);
-      strcat(query3, "'");
-
-      if (mysql_query(conn, query2)) {
-        fprintf(stderr, "%s\n", mysql_error(conn));
-        return 0;
-      }
-
-      MYSQL_RES * result2 = mysql_store_result(conn);
-
-      if (mysql_query(conn, query3)) {
-        fprintf(stderr, "%s\n", mysql_error(conn));
-        return 0;
-      }
-
-      MYSQL_RES * result3 = mysql_store_result(conn);
-
-      while ((row = mysql_fetch_row(result2))) {
-        p++;
-        for (j = 0; j < mysql_num_fields(result2); j++) {
-          printf("transport_config id for this route id is : %s \n", row[j] ? row[j] : "NULL");
-        }
-      }
-      while ((row = mysql_fetch_row(result3))) {
-        q++;
-        for (j = 0; j < mysql_num_fields(result3); j++) {
-          printf("transform_config id for this route id is : %s \n", row[j] ? row[j] : "NULL");
-        }
-      }
-
+  printf("%s\n%s\n%s\n",bd->envelope->Sender,bd->envelope->Destination, bd->envelope->MessageType);
+  if(validate_xml_file(bd)){
+  int id =select_active_route(bd->envelope->Sender, bd->envelope->Destination, bd->envelope->MessageType); 
+  printf("id is %d\n",id);                                
+    if(id > 0 ){
+      if(check_id_in_transform_config(id) >=0  &&  check_id_in_transport_config(id) >=0 ){
+          if(strlen(bd->payload) <= 5242880)
+            return 1;
+      } 
     }
-
-  }
-  if (k == -1) {
-    printf("For the received Sender, Destination, Message Type there are no  active route record present in the routes table \n");
-    return 0;
-  }
-  if (p == -1) {
-    printf("For this route id there are no record present in the transport_config table \n");
-    return 0;
-  }
-  if (q == -1) {
-    printf("For this route id there are no record present in the transform_config table \n");
-    return 0;
-  }
-  mysql_free_result(result);
-  mysql_close(conn);
-  printf("validation part done\n");
-  return 1;
-
+  }     
+   
+    return 0;                                         
 }
 
-/*
-
-int main(){
-   char * file="bmd.xml";
-   int x=validate_bmd(file);
-   return 0;
 
 
-}
+/* @ brief: validating bmd xml .
+ * checking whether xml file consists of all appropriate elements.
+ * if it contains returns 1
+ * else return 0
 */
+
+
+
+int validate_xml_file( bmd * bmd_file)
+{
+  /* MessageID */
+  if(bmd_file->envelope->MessageID  == NULL || (strcmp(bmd_file->envelope->MessageID,"")==0)) {
+    fprintf(stderr,"Message ID doesnot exist in bmd\n");
+    return 0;
+  }
+
+  /* MessageType */
+  if(bmd_file->envelope->MessageType == NULL || (strcmp(bmd_file->envelope->MessageType,"")==0)) {
+    fprintf(stderr,"Message Type doesnot exist in bmd\n");
+    return 0;
+  }
+
+  /* Sender */
+  if(bmd_file->envelope->Sender == NULL || (strcmp(bmd_file->envelope->Sender,"")==0)) {
+    fprintf(stderr,"Sender doesnot exist in bmd\n");
+    return 0;
+  }
+
+
+  /* Destination */
+  if(bmd_file->envelope->Destination == NULL || (strcmp(bmd_file->envelope->Destination,"")==0)) {
+    fprintf(stderr,"Destination doesnot exist in bmd\n");
+    return 0;
+  }
+
+
+  /* CreationDateTime */
+  if(bmd_file->envelope->CreationDateTime == NULL || (strcmp(bmd_file->envelope->CreationDateTime,"")==0)) {
+    fprintf(stderr,"CreationDateTime doesnot exist in bmd\n");
+    return 0;
+  }
+
+
+  /* Signature */
+  if(bmd_file->envelope->Signature == NULL || (strcmp(bmd_file->envelope->Signature,"")==0)) {
+    fprintf(stderr,"Signature doesnot exist in bmd\n");
+    return 0;
+  }
+
+  /* ReferenceID */
+  if(bmd_file->envelope->ReferenceID == NULL || (strcmp(bmd_file->envelope->ReferenceID,"")==0)) {
+      fprintf(stderr,"ReferenceID doesnot exist in bmd\n");
+      return 0;
+  }
+
+  /* payload */
+  if(bmd_file->payload == NULL || (strcmp(bmd_file->payload,"")==0)) {
+    fprintf(stderr,"Payload doesnot exist in bmd\n");
+    return 0;
+  }
+
+  return 1;
+}
+
+
+
+
+
+

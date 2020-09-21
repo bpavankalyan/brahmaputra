@@ -1,200 +1,270 @@
 
-/*
-section: Tree
-synopsis: Navigates a tree to print element names
-purpose: Parse a file to a tree, use xmlDocGetRootElement() to
-         get the root element, then walk the document and print
-         all the element name in document order.*/
+/**
+ * section: BMD XML document parsing 
+ * synopsis: Navigates through XML document and store the content in a struct present in xml.h
+ * purpose: Parse a XML to a tree, use xmlDocGetRootElement() to
+ *          get the root element, then walk the document and store
+ *          all the element name in a bmdMessage struct.
+ */
 
 #include <stdio.h>
-
 #include <libxml/parser.h>
-
-#include <libxml/tree.h>
-
-#include <string.h>
-
+#include <stdlib.h>
+#include<string.h>
 #include "bmd.h"
-
-
-/* 
-parses xml file in tree form using libxml and extracts envelope fields and payload from it.
-how to run:-
-gcc -Wall -I/usr/include/libxml2 -o test bmd_extract.c -lxml2*/
+#include<errno.h>
 
 
 
-
-struct map {
-  char * key;
-  char * value;
+char * attributes[7] =  {
+    "MessageID",
+    "MessageType",
+    "Sender",
+    "Destination",
+    "CreationDateTime",
+    "Signature",
+    "ReferenceID"
 };
-//checks if node is leaf
-int is_leaf(xmlNode * node) {
-  xmlNode * child = node -> children;
-  while (child) {
-    if (child -> type == XML_ELEMENT_NODE) return 0;
-    child = child -> next;
+ 
+/*
+* @ breif : checking whether is a leaf node generated in DOM  
+    if yes return 1 else 0    
+*/
+int is_leaf(xmlNode * node)
+{
+  xmlNode * child = node->children;
+  while(child)
+  {
+    if(child->type == XML_ELEMENT_NODE) return 0;
+    child = child->next;
   }
   return 1;
 }
 
 
-//extracts bmd file and puts the envelop and payload in array fields in order message id, message type, sender, destination, creation date time,
-//sign ,reference id, payload , user properties
-//also checks if mandatory fields present
-void extract_bmd(char * filename, char * fields[]) {
-  struct map attributes[20];
-  xmlDoc * doc = NULL;
-  xmlNode * root = NULL;
-  xmlNode * node = NULL;
-  xmlNode * payload = NULL;
-  doc = xmlReadFile(filename, NULL, 0);
+/*
+* breif @ extracting contents from a XML document and store it in bm
+* we store if node type is element and it is a leaf
+*/
 
-  char * MessageID = "MessageID";
-  char * MessageType = "MessageType";
-  char * Sender = "Sender";
-  char * Destination = "Destination";
-  char * CreationDateTime = "CreationDateTime";
-  char * Signature = "Signature";
-  char * ReferenceID = "ReferenceID";
-  char * Payload = "Payload";
-  char * UserProperties = "UserProperties";
+
+void extract_envelope_utils(xmlNode * node, bmd_envelope * bm)
+{
+    int n;
+    while(node)
+    {
+        if(node->type == XML_ELEMENT_NODE)
+        {
+            if(is_leaf(node))
+            {
+                 n= strlen((char*) xmlNodeGetContent(node));
+                 /* MessageID*/
+                if((strcmp(((char *) node->name),attributes[0]))==0)
+                {
+                    bm->MessageID = malloc((n+1)* sizeof(char));
+                    strcpy(bm->MessageID,(char *) xmlNodeGetContent(node));
+                    if(strcmp(bm->MessageID, "") ==0){
+                       bm->MessageID=NULL;  
+                    } 
+                }
+                /* MesageType*/
+                else if((strcmp(((char *) node->name),attributes[1]))==0)
+	              {
+	                  bm->MessageType =  (char *)malloc((n+1)* sizeof(char));
+                    strcpy(bm->MessageType ,(char *)xmlNodeGetContent(node));
+                    if(strcmp(bm->MessageType, "") ==0){
+                       bm->MessageType=NULL;  
+                    }    
+	              }
+                /* Sender*/
+                else if(strcmp(((char *) node->name), "Sender")==0)
+	              {
+		              bm->Sender =  (char *)malloc((n+1)* sizeof(char));
+                   strcpy(bm->Sender ,(char *)xmlNodeGetContent(node));
+                   if(strcmp(bm->Sender, "") ==0){
+                       bm->Sender=NULL;  
+                    } 
+	            	}
+                 /* Destination*/
+                else if((strcmp(((char *) node->name),attributes[3]))==0)
+                {
+		               bm->Destination =  (char *)malloc((n+1)* sizeof(char));
+                   strcpy(bm->Destination ,(char *)xmlNodeGetContent(node));
+                   if(strcmp(bm->Destination, "") ==0){
+                       bm->Destination=NULL;  
+                    } 
+	              }
+                /* CreationDateTime*/
+                else if((strcmp(((char *) node->name),attributes[4]))==0)
+	              {
+                   printf("yes\n");
+		               bm->CreationDateTime =  (char *)malloc((n+1)* sizeof(char));
+                   strcpy(bm->CreationDateTime ,(char *)xmlNodeGetContent(node));
+                   if(strcmp(bm->CreationDateTime, "") ==0){
+                       bm->CreationDateTime=NULL;  
+                    } 
+	              }
+                 /* Signature*/
+	              else  if((strcmp(((char *) node->name),attributes[5]))==0)
+            	  {
+         	         bm->Signature =  (char *)malloc((n+1)* sizeof(char));
+                   strcpy(bm->Signature ,(char *)xmlNodeGetContent(node));
+                   if(strcmp(bm->Signature, "") ==0){
+                       bm->Signature=NULL;  
+                    } 
+                }
+                /* ReferenceID*/
+                else if((strcmp(((char *) node->name),attributes[6]))==0)
+	              {
+		                bm->ReferenceID =  (char *)malloc((n+1)* sizeof(char));
+                    strcpy(bm->ReferenceID ,(char *)xmlNodeGetContent(node));\
+                    if(strcmp(bm->ReferenceID, "") ==0){
+                       bm->ReferenceID=NULL;  
+                    } 
+                }
+            }
+        }
+       extract_envelope_utils(node->children,bm);
+        node = node->next;
+    }
+}
+
+/* @ brief : extracting bmd_envelope
+*/
+
+bmd_envelope * extract_envelope(char * filepath)
+{
+  xmlDoc *doc = NULL;
+  xmlNode *root_element = NULL;
+
+  /*parse the file and get the DOM */
+  doc = xmlReadFile(filepath, NULL, 0);
+
   if (doc == NULL) {
-    printf("invalid xml format");
+    printf("Could not parse the XML file");
   }
+  /*Get the root element node */
+  bmd_envelope * bm =(bmd_envelope *) malloc(sizeof(bmd_envelope));
+  bm->MessageID = "";
+  bm->MessageType = "";
+  bm->CreationDateTime= "";
+  bm->Destination= "";
+  bm->Sender= "";
+  bm->Signature = "";
+  bm->ReferenceID= "";
 
-  root = xmlDocGetRootElement(doc);
-  //extracts envelope node
-  node = xmlFirstElementChild(root) -> children;
+  root_element = xmlDocGetRootElement(doc);
 
-  int i = 0;
-  //print_xml(root_element, 1);
-  while (node) {
-    if (node -> type == XML_ELEMENT_NODE) {
-      attributes[i].key = (char * ) node -> name;
-      attributes[i].value = (char * ) xmlNodeGetContent(node);
-      i++;
-    }
-    node = node -> next;
-  }
-  //extracts payload node
-  payload = xmlLastElementChild(root);
-  while (payload) {
-    if (payload -> type == XML_ELEMENT_NODE) {
-      attributes[i].key = (char * ) payload -> name;
-      attributes[i].value = (char * ) xmlNodeGetContent(payload);
-      i++;
-    }
-    payload = payload -> next;
-  }
+  extract_envelope_utils(root_element,bm);
 
-  int u = -1;
-  int m1 = 0, m2 = 0, m3 = 0, m4 = 0, m5 = 0, m6 = 0, m7 = 0, m8 = 0, m9 = 0;
-  int j;
-  for (j = 0; j < i; j++) {
-    char * s = attributes[j].key;
-    if (strcmp(MessageID, s) == 0) {
-      m1 = 1;
-      MessageID = attributes[j].value;
-    }
-    if (strcmp(MessageType, s) == 0) {
-      m2 = 1;
-      MessageType = attributes[j].value;
-    }
-    if (strcmp(Sender, s) == 0) {
-      m3 = 1;
-      Sender = attributes[j].value;
-    }
-    if (strcmp(Destination, s) == 0) {
-      m4 = 1;
-      Destination = attributes[j].value;
-    }
-    if (strcmp(CreationDateTime, s) == 0) {
-      m5 = 1;
-      CreationDateTime = attributes[j].value;
-    }
-    if (strcmp(Signature, s) == 0) {
-      m6 = 1;
-      Signature = attributes[j].value;
-    }
-    if (strcmp(ReferenceID, s) == 0) {
-      m7 = 1;
-      ReferenceID = attributes[j].value;
-    }
-    if (strcmp(Payload, s) == 0) {
-      m8 = 1;
-      Payload = attributes[j].value;
-    }
-    if (strcmp(UserProperties, s) == 0) {
-      m9 = 1;
-      u = j;
-      UserProperties = attributes[j].value;
-    }
 
-  }
-  if (m1 == 0) {
-    printf("%s field is not present in BMD File", MessageID);
-  }
-  if (m2 == 0) {
-    printf("%s field is not present in BMD File", MessageType);
-  }
-  if (m3 == 0) {
-    printf("%s field is not present in BMD File", Sender);
-  }
-  if (m4 == 0) {
-    printf("%s field is not present in BMD File", Destination);
-  }
-  if (m5 == 0) {
-    printf("%s field is not present in BMD File", CreationDateTime);
-  }
-  if (m6 == 0) {
-    printf("%s field is not present in BMD File", Signature);
-  }
-  if (m7 == 0) {
-    printf("%s field is not present in BMD File", ReferenceID);
-  }
-  if (m8 == 0) {
-    printf("%s field is not present in BMD File", Payload);
-  }
-  if (m1 == 1 && m2 == 1 && m3 == 1 && m4 == 1 && m5 == 1 && m6 == 1 && m7 == 1 && m8 == 1)
-    printf("All mandatory fields are present in BMD\n");
-  else exit(1);
+   /*free the document */
+    xmlFreeDoc(doc);
 
-  fields[0] = MessageID;
-  fields[1] = MessageType;
-  fields[2] = Sender;
-  fields[3] = Destination;
-  fields[4] = CreationDateTime;
-  fields[5] = Signature;
-  fields[6] = ReferenceID;
-  fields[7] = Payload;
-  if (u != -1 && m9 == 1) fields[8] = UserProperties;
+  /*
+  *Free the global variables that may
+  *have been allocated by the parser.
+  */
+    xmlCleanupParser();
+    return bm;
+}
 
+
+
+
+
+
+char * extract_payload(char * filepath)
+{
+
+
+  xmlDoc *doc = NULL;
+  xmlNode *root_element = NULL;
+  char * Payload;
+  /*parse the file and get the DOM */
+  doc = xmlReadFile(filepath, NULL, 0);
+
+  if (doc == NULL) {
+    printf("Could not parse the XML file");
+  }
+  /*Get the root element node */
+  root_element = xmlDocGetRootElement(doc);
+  int n;
+  xmlNode * node = root_element -> children;
+  while(node)
+  {
+
+    if(node->type == XML_ELEMENT_NODE)
+    {
+      if(is_leaf(node))
+      {
+
+        if ((strcmp(((char *) node->name),"Payload"))==0)
+	      {
+	              n= strlen((char*) xmlNodeGetContent(node));
+	          printf("payload length is  %d\n",n);
+            Payload = (char *)malloc((n+2)* sizeof(char));
+            printf("%s\n", (char *) xmlNodeGetContent(node));
+           // Payload =  (char *) xmlNodeGetContent(node);
+            strcpy(Payload , (char *) xmlNodeGetContent(node));
+            	          printf("payload %s\n",Payload);
+            if(n==0){
+                Payload=NULL;  
+            } 
+            return Payload;
+        }
+      } 
+    }
+    node= node->next;
+  } 
+
+  /*free the document */
   xmlFreeDoc(doc);
 
+  /*
+  *Free the global variables that may
+  *have been allocated by the parser.
+  */
   xmlCleanupParser();
-
+  printf("yesssss\n");
+  return NULL;     
 }
 
 
 
-int main(){
-  
-  char * filename="bmd1.xml";
-  char * fields[10];
-  extract_bmd(filename, fields); 
-    
-  printf("MessageID = %s\n",fields[0]);
-  printf("MessageType = %s\n",fields[1]);
-  printf("Sender = %s\n",fields[2]);
-  printf("Destination = %s\n",fields[3]);
-  printf("CreationDateTime = %s\n",fields[4]);
-  printf("Signature = %s\n",fields[5]);
-  printf("ReferenceID = %s\n",fields[6]);
-  printf("Payload = %s\n",fields[7]);
-  printf("UserProperties = %s\n",fields[8]);
-  exit (0);  
+/* @ breif : extracting payload from xml file
+* input aruguments : filepath ( ehere xml file is stored)
+* returns payload as char *
+* returning the payload 
+*/
 
+
+bmd * parse_bmd_xml(char * filepath)
+{
+   printf("XML PARSING\n");
+   bmd  * bd = (bmd*) malloc (sizeof(bmd));
+   bd->envelope=  extract_envelope(filepath);
+   bd->payload= extract_payload(filepath);
+   return bd;
 }
 
+
+/*
+int main()
+{
+
+    char  filepath[100] = "../Testcases/bmd5.xml";
+    bmd  * bd = (bmd*) malloc (sizeof(bmd));
+    bd= parse_bmd_xml(filepath);
+    printf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n",bd->envelope->Sender, bd->envelope->Destination,  \
+                                              bd->envelope->MessageType, bd->envelope->Signature,\
+                                               bd->envelope->ReferenceID, bd->envelope->MessageID,
+                                               bd->envelope->CreationDateTime,\
+                                              bd->payload);
+
+    printf("%d\n",validate_xml_file(bd));
+
+    return 0;
+}
+
+*/

@@ -4,23 +4,7 @@
 //#include "../extract_bmd/bmd_extract.c"
 //#include "../validate_bmd/bmd_validate.c"
 
-bmd parse_bmd_xml(char* bmd_file_path) {
-    char * fields[10];
-    extract_bmd(bmd_file_path, fields); 
-    bmd b;
-    bmd_envelop envl;
-   
-    envl.MessageID=fields[0];
-    envl. MessageType= fields[1];
-    envl.Sender= fields[2];
-    envl.Destination= fields[3];
-    envl.CreationDateTime= fields[4];
-    envl.Signature= fields[5];
-    envl.ReferenceID= fields[6];
-    b.envelop = envl;
-    b.payload = fields[7];
-    return b;
-}
+
 
 int is_bmd_valid(bmd b)
 {

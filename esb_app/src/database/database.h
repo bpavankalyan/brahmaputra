@@ -11,16 +11,19 @@
 #define FLAG        0           /*last parameter to mysql_real_connect*/
 
 
-#define INSERT_INTO_ESB_REQUEST "INSERT INTO esb_request(sender_id,dest_id,message_type,reference_id,message_id,received_on,data_location,status,status_details) VALUES ('%s','%s','%s','%s','%s','%s','%s','%s',%s')"
+#define INSERT "INSERT INTO                                  \
+esb_request(sender_id,dest_id,message_type,reference_id,     \
+message_id,data_location,status,status_details,received_on)  \
+VALUES(?,?,?,?,?,?,?,?,?)"
+
 #define SELECT_ACTIVE_ROUTE     "SELECT route_id FROM routes WHERE sender = '%s' AND destination = '%s' AND message_type= '%s'  AND is_active=b'1'"
 #define SELECT_TRANSPORT_CONFIG "SELECT * FROM transport_config WHERE route_id='%d'"
 #define SELECT_TRANSFORM_CONFIG "SELECT * FROM transform_config WHERE route_id='%d'"
 
-#define CHECK_NEW_REQUEST "SELECT * FROM esb_request WHERE status = 'RECEIVED' AND id= %d LIMIT 1" 
+#define CHECK_NEW_REQUEST "SELECT * FROM esb_request WHERE status = 'RECEIVED' LIMIT 1" 
 
 #define UPDATE_ESB_REQUEST "UPDATE esb_request SET status = ? WHERE id = ? "   
 
-#define GET_routeid "SELECT route_id FROM routes WHERE sender = '%s' AND destination = '%s' AND message_type= '%s'"
 #define FETCH_TRANSFORM_KEY_AND_VALUE "SELECT config_key,config_value FROM transform_config WHERE route_id= %d "
 #define FETCH_TRANSPORT_KEY_AND_VALUE "SELECT config_key,config_value FROM transport_config WHERE route_id=  %d "
 
@@ -36,13 +39,35 @@ typedef struct transform_config_data
     char * config_value;
 }transform_config;
 
-int insert_esb_request (char * bmd);
 
-void  fetch_transform_config_key_and_value(int route_id,char *key, char *value);
+typedef struct Qinfo { 
+    int id;
+    char * sender;
+    char * destination;
+    char * message_type;
+    char * data_location;
+}task_node_info;
 
-void fetch_transport_config_key_and_value(int route_id, char * key, char * value);
+
+
+int insert_to_esb_request(char *sender_id, char *dest_id,
+                          char *message_type, char *reference_id, char *message_id,
+                          char *data_location, char *status, char *status_details, char *received_on);
+
+transform_config * fetch_transform_config_key_and_value(int route_id);
+
+transport_config * fetch_transport_config_key_and_value(int route_id);
 
 int update_esb_request (char * status, int id);
+
+task_node_info * check_new_request();
+
+int select_active_route(const char * Sender,const char * Destination, const  char * MessageType) ;
+
+int check_id_in_transport_config(int route_id) ;
+int check_id_in_transform_config(int route_id) ;
+
+
 
 
 /*

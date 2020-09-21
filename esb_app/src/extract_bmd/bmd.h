@@ -10,33 +10,35 @@
 #ifndef BMD_H
 #define BMD_H
 
-struct map{
-  char*  key;
-  char* value;
-};
-typedef struct {
-  char * MessageID;
-  char * MessageType;
-  char * Sender;
-  char * Destination;
-  char * CreationDateTime;
-  char * Signature;
-  char * ReferenceID;
-  char* UserProperties;
+typedef struct 
+{
+    char  *MessageID;
+    char  *MessageType;
+    char  *Sender;
+    char * Destination;
+    char *CreationDateTime;
+    char  *Signature;
+    char  *ReferenceID;
 }bmd_envelope;
 
-typedef struct {
-   
-    bmd_envelope * envelope;
-    char * Payload;
-}bmd ;
+
+typedef struct 
+{
+  bmd_envelope * envelope;
+  char * payload;
+} bmd;
 
 
 
-bmd * extract_bmd (char * filename,  char* fields[]);
-bmd * xml_to_json(char* xml_file, char* json_file);
-int validate_bmd(char * MessageType, char* Sender, char* Destination);
-void extract_bmd (char * filename,  char* fields[]);
+bmd_envelope *  extract_envelope(char * filepath);
+char * extract_payload(char * filepath);
+int validate_xml_file (bmd * bmd_file);
+bmd * parse_bmd_xml(char * filepath);
+int is_bmd_valid(bmd* bd); 
+
+
+
+
 
 #endif
 
