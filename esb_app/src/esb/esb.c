@@ -1,43 +1,31 @@
-#include<stdio.h>
-#include "email.h"
+#include <stdlib.h>
+#include <stdio.h>
 #include "esb.h"
-//#include "../extract_bmd/bmd_extract.c"
-//#include "../validate_bmd/bmd_validate.c"
+/** Module that has mysql C API functions */
 
 
 
-int is_bmd_valid(bmd b)
-{
+int queue_the_request(bmd *b,char * file_path) {
+    int success = 1; // 1 => OK, -1 => Error cases
 
-    char * MessageType=b.envelop.MessageType;
-    char * Sender=b.envelop.Sender;
-    char * Destination=b.envelop.Destination;
-    int  valid =validate_bmd( MessageType,  Sender, Destination);
-
-    return valid;
-}
-
-int queue_the_request(bmd b,char* bmd_file_path)
-{
-    
-        char * fields[10];
-
-        fields[0] = b.envelop.MessageID;
-        fields[1] = b.envelop.MessageType;
-        fields[2] = b.envelop.Sender;
-        fields[3] = b.envelop.Destination;
-        fields[4] = b.envelop.CreationDateTime;
-        fields[5] = b.envelop.Signature;
-        fields[6] = b.envelop.ReferenceID;
-        fields[7]= bmd_file_path;
-
-    /** 
-     * TODO: Insert the envelop data into esb_requests table,
-     * and implement other logic for enqueueing the request
-     * as specified in Theory of Operation.
+    /**
+     * @brief Implements the Query:
+     * INSERT INTO                            
+     * esb_request(sender_id,dest_id,message_type,reference_id,      
+     * message_id,data_location,status,status_details)               
+     * VALUES(?,?,?,?,?,?,?,?)
+     *insert_to_esb_request(char *sender_id, char *dest_id, \
+     *                   char *message_type, char *reference_id, char *message_id, \
+     *                     char *data_location, char *status, char *status_details, char *received_on)
+     * function returns 1 on successful insertion. 
+     * function is defined in db_access module
      */
-    int r=insert_esb_request (fields);
-    return r;
+    int rc = insert_to_esb_request(b->envelope->Sender,
+    b->envelope->Destination,b->envelope->MessageType,
+    b->envelope->ReferenceID,b->envelope->MessageID,
+    file_path,"RECEIVED","",b->envelope->CreationDateTime);
+    if(rc ==1)
+    return success;
 }
 
 /**
@@ -47,21 +35,37 @@ int queue_the_request(bmd b,char* bmd_file_path)
 int process_esb_request(char* bmd_file_path) {
     int status = 1; // 1 => OK, -ve => Errors
     printf("Handling the BMD %s\n", bmd_file_path);
-    // Step 1:
-    bmd b = parse_bmd_xml(bmd_file_path);
+    
+    bmd *b = parse_bmd_xml(bmd_file_path);
 
-    // Step 2:
-    if (!is_bmd_valid(b))
+    /** defined in bmd_extract module*/
+    if (is_bmd_valid(b)!=1)
     {
-       
         printf("BMD is invalid!\n");
         status = -2;
     }
     else
     {
         // Step 3:
-        status = queue_the_request(b,  bmd_file_path);
+                printf("BMD is valid!\n");
+        status = queue_the_request(b,bmd_file_path);
+       if(status==1) printf("Queued..!\n");
+       else          printf("NOT queued!\n");
     }
     
     return status;
 }
+
+#if 0
+int main () {
+    int status = process_esb_request("../Testcases/bmd.xml");
+    
+    if(status != 1) {
+        printf("Status[%d]: Request processing failed",status);
+        return EXIT_FAILURE;
+        }
+        printf("Status[%d]: Request processing sucess",status);
+    return 0;
+ }   
+
+#endif
