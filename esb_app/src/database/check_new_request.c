@@ -44,10 +44,10 @@ task_node_info *  check_new_request(void) {
     printf("%s\n",row[3]);
 
     task_node->id = atoi(row[0]);
-    task_node->sender = row[1];
-    task_node->destination = row[2];
-    task_node->message_type = row[3];
-    task_node->data_location = row[7];
+    task_node->sender = strdup(row[1]);
+    task_node->destination = strdup(row[2]);
+    task_node->message_type = strdup(row[3]);
+    task_node->data_location = strdup(row[7]);
 
     return task_node;
 

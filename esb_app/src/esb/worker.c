@@ -77,7 +77,7 @@ void *poll_database_for_new_requests(void *vargp)
                
                printf("data->location is %s\n ",tn->data_location);
 
-              bd1 = parse_bmd_xml(((char *)tn->data_location));
+               bd1 = parse_bmd_xml(((char *)tn->data_location));
 
                printf("%s\n%s\n-----\n%s\n%s\n",tf->config_key,tf->config_value,tp->config_key,tp->config_value);         
                if((tp!=NULL) && ((strcmp(tf->config_value,"string"))==0))
@@ -106,7 +106,7 @@ void *poll_database_for_new_requests(void *vargp)
                             
                 
                 else{
-	               printf("WITH TRANSFORMATION\n");
+	           printf("WITH TRANSFORMATION\n");
                   transform_file_name = call_function(tf->config_key,bd1->payload,tf->config_value);
                   call_function(tp->config_key,tp->config_value,transform_file_name); 
                   content = call_function(tp->config_key,tp->config_value,bd1->payload);
@@ -124,7 +124,9 @@ void *poll_database_for_new_requests(void *vargp)
                   printf("%s\n", (char *) call_function("remove",file_name ,NULL));
                free(transform_file_name);
                }
-
+            
+            /* clean up the variables stored in heap*/
+            
             free_bmd(bd1);
             free_transform_config(tf);
             free_transport_config(tp);

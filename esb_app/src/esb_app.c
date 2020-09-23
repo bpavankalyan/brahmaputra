@@ -292,14 +292,16 @@ void kore_parent_configure(int argc, char *argv[])
 	printf("\n%%%%%%%%%% kore_parent_configure\n");
 	// TODO: Start a new thread for task polling
 	
+	/* Inorder to have thread safe environment
+	*  we must either call mysql_library_init() prior to spawning any threads
+	*/
 	if (mysql_library_init(0, NULL, NULL))
 	{
 		fprintf(stderr, "Could not initialize MySQL client library\n");
 		return -1;
 	}
-	int t= connect_to_db();
-	if(t==-1)
-	printf("not connected to database\n");
+	
+
 	char * name ="1";
 	char * names = "2";
 	pthread_create(&thread_id, NULL, poll_database_for_new_requests, name);

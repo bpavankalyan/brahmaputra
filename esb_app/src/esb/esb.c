@@ -52,11 +52,24 @@ int process_esb_request(char* bmd_file_path) {
     else
     {
         // Step 3:
-                printf("BMD is valid!\n");
+        printf("BMD is valid!\n");
         status = queue_the_request(b,bmd_file_path);
        if(status==1) printf("Queued..!\n");
        else          printf("NOT queued!\n");
     }
+    
+    if(status != 1)
+    {
+       /* clean up the directory where we stored 
+       * stored .xml file [ As we are not going 
+       * to further steps] .
+       */
+       
+      clean_dir(bmd_file_path);
+    }  
+    
+    free_bmd(b);
+        
     
     return status;
 }
