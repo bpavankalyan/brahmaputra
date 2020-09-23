@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "esb.h"
+#include "../adapter/adapter.h"
 #include <string.h>
 #include <stdlib.h>
 #include <pthread.h>
-
-
+// #include "../task_queue/task_queue.h"
+#include "../database/database.h"
+#include "../extract_bmd/bmd.h"
 
 
 
@@ -23,7 +25,7 @@ task_node_info *  fetch_new_request_from_db()
 
     // select_info picks up the oldest row in esb_request table 
     printf("Checking for new requests in esb_requests table.\n");
-    task_node_info * tn;
+    task_node_info * tn ;
     if(( tn = check_new_request()) != NULL){
          return tn; 
     }
@@ -48,6 +50,7 @@ void *poll_database_for_new_requests(void *vargp)
         char * content;
         char * transform_file_name; 
         char * file_name;
+        bmd * bd1 ;
 
 
         pthread_mutex_lock(&lock);
@@ -65,7 +68,7 @@ void *poll_database_for_new_requests(void *vargp)
                     return NULL;
                }
 
-               int id = active_routes_from_source(tn->sender,tn->destination,tn->message_type);
+               int id = select_active_route(tn->sender,tn->destination,tn->message_type);
                printf("id is %d \n",id);
                
                printf("Applying transformation and transporting steps.\n");
@@ -74,7 +77,7 @@ void *poll_database_for_new_requests(void *vargp)
                
                printf("data->location is %s\n ",tn->data_location);
 
-               bmd * bd1 = parse_bmd_xml(((char *)tn->data_location));
+              bd1 = parse_bmd_xml(((char *)tn->data_location));
 
                printf("%s\n%s\n-----\n%s\n%s\n",tf->config_key,tf->config_value,tp->config_key,tp->config_value);         
                if((tp!=NULL) && ((strcmp(tf->config_value,"string"))==0))
@@ -119,8 +122,6 @@ void *poll_database_for_new_requests(void *vargp)
                        update_esb_request("ERROR",tn->id);   
                   }
                   printf("%s\n", (char *) call_function("remove",file_name ,NULL));
-
-
                free(transform_file_name);
                }
 

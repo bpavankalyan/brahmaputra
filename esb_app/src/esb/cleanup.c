@@ -16,7 +16,9 @@ void free_bmd(bmd *b)
     free(b->envelope->ReferenceID);
     free(b->envelope);
     free(b->payload);
+    free(b);
 }
+
 
 char *get_dir_name(const char *s)
 {
@@ -35,23 +37,21 @@ char *get_dir_name(const char *s)
 
 void clean_dir(char *path)
 { /* Deletes the BMD file specified by the path */
-    
+        printf("bcnxbncbxnzcmz\n");
     remove(path);
     printf("removed :%s", path);
     path = get_dir_name(path);
     /* Removes the directory created by random numberes*/
     rmdir(path);
     printf("removed :%s", path);
-    free(path);
+    //free(path);
 }
 
 void free_request(task_node_info *t)
 {
     clean_dir(t->data_location);
-    free(t->data_location);
-    free(t->message_type);
-    free(t->sender);
-    free(t);
+    printf("\nbcnxbncbxnzcmz\n");
+    printf("\nbcnxbncbxnzcmz\n");
 }
 
 

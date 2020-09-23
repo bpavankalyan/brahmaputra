@@ -8,7 +8,7 @@
 #define STRING_SIZE 1000
 
 
-task_node_info *  check_new_request() {
+task_node_info *  check_new_request(void) {
 
     MYSQL * conn;
     MYSQL_RES * res;

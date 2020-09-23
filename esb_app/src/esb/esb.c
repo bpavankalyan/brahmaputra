@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "esb.h"
+
+#include "../extract_bmd/bmd.h"
+#include "../database/database.h"
 /** Module that has mysql C API functions */
 
 
@@ -20,6 +23,8 @@ int queue_the_request(bmd *b,char * file_path) {
      * function returns 1 on successful insertion. 
      * function is defined in db_access module
      */
+     
+     printf("%s\n",b->envelope->CreationDateTime);
     int rc = insert_to_esb_request(b->envelope->Sender,
     b->envelope->Destination,b->envelope->MessageType,
     b->envelope->ReferenceID,b->envelope->MessageID,

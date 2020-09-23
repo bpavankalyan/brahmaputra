@@ -41,6 +41,9 @@
 #include <sys/stat.h>
 #include <limits.h>
 #include <stdio.h>
+#include <mysql/mysql.h>
+
+#include "database/database.h"
 
 //#define PATH_MAX 500
 
@@ -288,11 +291,20 @@ void kore_parent_configure(int argc, char *argv[])
 {
 	printf("\n%%%%%%%%%% kore_parent_configure\n");
 	// TODO: Start a new thread for task polling
+	
+	if (mysql_library_init(0, NULL, NULL))
+	{
+		fprintf(stderr, "Could not initialize MySQL client library\n");
+		return -1;
+	}
+	int t= connect_to_db();
+	if(t==-1)
+	printf("not connected to database\n");
 	char * name ="1";
 	char * names = "2";
 	pthread_create(&thread_id, NULL, poll_database_for_new_requests, name);
-	//sleep(10);
-	//pthread_create(&thread_id1, NULL, poll_database_for_new_requests, names);
+	sleep(1);
+	pthread_create(&thread_id1, NULL, poll_database_for_new_requests, names);
 }
 
 void kore_parent_teardown(void)
@@ -303,5 +315,5 @@ void kore_parent_teardown(void)
 	 * Instead of killing it, ask the thread to terminate itself.
 	 */
 	pthread_cancel(thread_id);
-	//pthread_cancel(thread_id1);
+	pthread_cancel(thread_id1);
 }
