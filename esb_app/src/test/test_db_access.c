@@ -11,7 +11,7 @@
 static void *
 esb_request_setup(const MunitParameter params[], void *user_data)
 {
-  char *file = "../Testcases/bmd1.xml";
+  char *file = "../Testcases/bmd2.xml";
   bmd *b = parse_bmd_xml(file);
   return b;
 }
@@ -28,7 +28,7 @@ test_esb_request(const MunitParameter params[], void *fixture)
    test_bmd->envelope->ReferenceID,test_bmd->envelope->MessageID,
     "","RECEIVED","",test_bmd->envelope->CreationDateTime);
     
-  munit_assert_int(rc,==,1);
+  munit_assert_int(rc,==,-1);
 
   rc = insert_to_esb_request(test_bmd->envelope->Sender,
     test_bmd->envelope->Destination,test_bmd->envelope->MessageType,
@@ -63,7 +63,7 @@ test_check_id_in_transform_config(const MunitParameter params[], void *fixture)
 {
 
   munit_assert_int(check_id_in_transform_config(15),==,1);
-  munit_assert_int(check_id_in_transform_config(1),==,-1);
+  munit_assert_int(check_id_in_transform_config(1),==,0);
 
   return MUNIT_OK;
 }
@@ -77,7 +77,7 @@ test_check_id_in_transport_config(const MunitParameter params[], void *fixture)
 {
 
   munit_assert_int(check_id_in_transport_config(15),==,1);
-  munit_assert_int(check_id_in_transport_config(1),==,-1);
+  munit_assert_int(check_id_in_transport_config(1),==,0);
 
   return MUNIT_OK;
 }
@@ -104,7 +104,7 @@ test_select_active_route_id(const MunitParameter params[], void *fixture)
     
     munit_assert_int(rc,==,15);
 
-  rc = active_routes_from_source(test_bmd->envelope->Sender,
+  rc = select_active_route(test_bmd->envelope->Sender,
     "hjhbj",test_bmd->envelope->MessageType);  
 
   munit_assert_int(rc,==,-1);
@@ -134,11 +134,11 @@ static MunitResult
 test_update_esb_request(const MunitParameter params[], void *fixture)
 {
     
-  munit_assert_int(update_esb_request("PROCESSING",1),==,1);
-  munit_assert_int(update_esb_request("PROCESSING",1),==,-1);
-  munit_assert_int(update_esb_request("PROCESSING",1),==,-1);
-  munit_assert_int(update_esb_request("DONE",1),==,1);
-  munit_assert_int(update_esb_request("RECEIVED",1),==,1);
+  munit_assert_int(update_esb_request("PROCESSING",60),==,1);
+  munit_assert_int(update_esb_request("PROCESSING",60),==,-1);
+  munit_assert_int(update_esb_request("PROCESSING",60),==,-1);
+  munit_assert_int(update_esb_request("DONE",60),==,1);
+  munit_assert_int(update_esb_request("RECEIVED",60),==,1);
 
   return MUNIT_OK;
 }
@@ -228,7 +228,7 @@ static void *
 test_select_task_info_setup(const MunitParameter params[], void *user_data)
 {
 
-  task_node_info * tf= select_task_info();
+  task_node_info * tf= check_new_request();
   return tf;
 }
 
@@ -261,16 +261,6 @@ test_select_task_info_tear_down(void *fixture)
 }
 
 
-
-/* Test function for esb_request */
-static MunitResult
-test_select_status(const MunitParameter params[], void *fixture)
-{
-  
-  munit_assert_int(select_status("RECEIVED"),>=,1);
-  munit_assert_int(select_status("status"),==,-1);
-  return MUNIT_OK;
-}
 
 
 
@@ -324,15 +314,6 @@ MunitTest db_access_functions_tests[] = {
 
     },
     
-    {
-       "/select_status_test",   /* name */
-       test_select_status,      /* test function */
-       NULL,                    /* setup function for the test */
-       NULL,                    /* tear_down */
-       MUNIT_TEST_OPTION_NONE,  /* options */
-       NULL                     /* parameters */
-    },
-
 
     {
        "/fetch_transform_config_key_and_value_test",        /* name */
@@ -377,9 +358,10 @@ static const MunitSuite suite = {
     MUNIT_SUITE_OPTION_NONE /* options */
 };
 
-/* Run the the test suite 
+/* Run the the test suite */
+#if 0
 int main(int argc, const char *argv[])
 {
   return munit_suite_main(&suite, NULL, argc, NULL);
 }
-*/
+#endif

@@ -39,6 +39,9 @@ int select_active_route(const char * Sender, const char * Destination, const  ch
     if(res== NULL)
        return -1;
     row = mysql_fetch_row(res);
+    int nu=mysql_num_rows(res);
+    if(nu <1)
+      return -1;
     route = atoi(row[0]);
 
     mysql_free_result(res);
