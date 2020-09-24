@@ -55,19 +55,19 @@ void *poll_database_for_new_requests(void *vargp)
 
         pthread_mutex_lock(&lock);
         tn=fetch_new_request_from_db();
-        pthread_mutex_unlock(&lock);
-
-        
-        if (tn!=NULL)
+        if(tn==NULL)
         {
-            
+          printf("NO REQUESTS AVAILABLE\n");
+          pthread_mutex_unlock(&lock);
+        }  
+      
+      else{
                printf("%d\n",tn->id);
               
-               if(update_esb_request("PROCESSING",tn->id) == -1){
-                    fprintf(stderr,"cannot update status in esb\n");
-                    return NULL;
-               }
-
+               update_esb_request("PROCESSING",tn->id);
+               pthread_mutex_unlock(&lock);
+               
+               
                int id = select_active_route(tn->sender,tn->destination,tn->message_type);
                printf("id is %d \n",id);
                
@@ -138,7 +138,7 @@ void *poll_database_for_new_requests(void *vargp)
 
        
 
-
+sleep:
         /**
          * Sleep for polling interval duration, say, 5 second.
          */

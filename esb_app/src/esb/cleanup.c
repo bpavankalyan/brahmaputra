@@ -42,7 +42,7 @@ void clean_dir(char *path)
     path = get_dir_name(path);
     /* Removes the directory created by random numberes*/
     rmdir(path);
-    printf("removed :%s", path);
+    printf("removed :%s\n", path);
 }
 
 void free_request(task_node_info *t)

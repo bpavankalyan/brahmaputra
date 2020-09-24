@@ -7,10 +7,14 @@ DB_ACCESS1 = ../database/fetch_transform_config_key_and_value.c  \
 
 XML_HANDLER = ../extract_bmd/bmd_extract.c ../extract_bmd/bmd_validate.c
 ESB_HANDLER = ../esb/esb.c ../esb/cleanup.c 
-INCLUDE = `mysql_config --cflags --libs` `xml2-config --cflags` `xml2-config --libs`
-bmd:  ${XML_HANDLER} ${DB_ACCESS1} ${DB_ACCESS}  ${ESB_HANDLER}
+ADAPTER_HANDLER = ../adapter/dynamic_lookup.c ../adapter/http.c ../adapter/email.c ../adapter/ftp.c\
+                ../adapter/json_related.c
+
+INCLUDE = `mysql_config --cflags --libs` `xml2-config --cflags` `xml2-config --libs` -lcurl
+bmd:  ${ADAPTER_HANDLER}
 #	gcc  ${XML_HANDLER} ${DB_ACCESS1} ${DB_ACCESS} test_bmd.c -o bmd  ${ESB_HANDLER} ${INCLUDE}  munit.c
-	gcc  ${XML_HANDLER} ${DB_ACCESS1} ${DB_ACCESS} test_db_access.c -o bmd  ${ESB_HANDLER} ${INCLUDE}  munit.c
+#	gcc  ${XML_HANDLER} ${DB_ACCESS1} ${DB_ACCESS} test_db_access.c -o bmd  ${ESB_HANDLER} ${INCLUDE}  munit.c
+	gcc    ${ADAPTER_HANDLER} test_adapter.c -o bmd  ${INCLUDE}  munit.c
 
 
 
