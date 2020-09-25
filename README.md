@@ -53,21 +53,21 @@ someuser@OX:~/temp/esb_proj/esb_app$ tree
     |   ├── convert_to_json.c
     │   └── http_post.c
     |
-    ├── db_access   <-------- db access functions (c functions interacting database)
-    |   ├── connection.h 
+    ├── database   <-------- db access functions (c functions interacting database)
+    |   ├── database.h 
     |   ├── insert_esb_request.c
     |   ├── select_status.c
-    |   ├── select_task_info.c
+    |   ├── check_new_requests.c
     |   ├── fetch_transport_config_key_and_value.c
     |   ├── fetch_tranform_config_key_and_value.c
     |   ├── check_id_tranform_config.c
     |   ├── check_id_tranport_config.c
     |   └── select_active_route_id.c
     |
-    ├── bmd_extract  <---------- extracting and handling bmd xml messages.
-    |   ├── xml_handle.c
-    |   ├── validate_bmd_request.c
-    |   └── xml.h
+    ├── extract_bmd <---------- extracting and handling bmd xml messages.
+    |   ├── bmd_extract.c
+    |   ├── bmd_validate.c
+    |   └── bmd.h
     |  
     ├── esb
     │   ├── esb.c
