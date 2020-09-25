@@ -155,7 +155,7 @@ kodev run
 Open another terminal in Testcases folder and run shell script like following:
 1. `./input.sh bmd bmd1.xml bmd2.xml ` <---------- we can insert any .xml files as cammnd line arguments.
 1. The above cammand is useful when we want to insert post request.
-1. `./input.sh get-status 4ac268c2-f658-11ea-adc1-0242ac120002` <---------- sample Message ID (should be GUID STRING) we can status of all cammand line arguments messageid.
-
+1. `./input.sh get-status 4ac268c2-f658-11ea-adc1-0242ac120002` <---------- sample Message ID (should be GUID STRING) we can get status of all cammand line arguments should be messageid.
+1. Dynamically we can invoke get and post requests using shell script.
 Check the logs in first shell; it should show that the file was successfully received.
 
