@@ -1,3 +1,13 @@
+/**
+ * @brief Function fetches transform config value and key
+ * sql query:SELECT config_key,config_value 
+ *           FROM transform_config WHERE route_id= %d
+ * 
+ * returns struct containing transform_config key and value
+ *         if route_id exists else NULL if does not exist.
+ * 
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

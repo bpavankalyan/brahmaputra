@@ -24,7 +24,7 @@
 #define STRING_SIZE 1000
 #define SELECT_SAMPLE "SELECT status FROM esb_request WHERE message_id = '%s' "
 
-char* get_status_info(char *message_id)
+char* get_status_information(char *message_id)
 {  
     printf("messageID is %s\n",message_id);
     char * status;

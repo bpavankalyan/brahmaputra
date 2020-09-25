@@ -33,6 +33,13 @@ task_node_info *  fetch_new_request_from_db()
     return NULL;     
 }
 
+void update_as_error(int id)
+{
+    update_esb_request("ERROR",id);  
+    
+}
+
+
 /**
  *  Implement the proper logic as per ESB specs.
  */
@@ -73,37 +80,24 @@ void *poll_database_for_new_requests(void *vargp)
                
                printf("Applying transformation and transporting steps.\n");
                transport_config * tp = fetch_transport_config_key_and_value(id);
-	            transform_config * tf= fetch_transform_config_key_and_value(id);
+	       transform_config * tf= fetch_transform_config_key_and_value(id);
                
                printf("data->location is %s\n ",tn->data_location);
 
                bd1 = parse_bmd_xml(((char *)tn->data_location));
 
                printf("%s\n%s\n-----\n%s\n%s\n",tf->config_key,tf->config_value,tp->config_key,tp->config_value);         
-               if((tp!=NULL)
+               if((tp!=NULL)) 
                {
-                if((strcmp(tf->config_value,"string"))==0))
+                if (((strcmp(tf->config_value,"string"))==0))
                 {           
                   content = call_function(tp->config_key,tp->config_value,bd1->payload);
                   printf("content is \n %s\n",content);
                   if((strcmp(content,"NO"))==0){
-                     goto error;
+                        update_as_error(tn->id);
+                        goto cleanup;
                   }
-                  file_name =  (char *) call_function("insert_to_json_file",content,bd1->payload);
-                  printf("%s\n",file_name);
-                  if(((strcmp(((char *)call_function("email","Testmailchenab1@gmail.com",file_name)) ,"NO"))!=0)
-                     && ((strcmp(((char *)call_function("ftp",bd1->payload,file_name)) ,"NO"))!=0))
-                  {
-                     printf("sent the json file of destination service\n");
-                      update_esb_request("DONE",tn->id) ;
-                  }
-                  else{
-                     error:
-                       printf("----------\nemail not sent\n-------------------\n");
-                       update_esb_request("ERROR",tn->id);   
-                  }
-                  printf("%s\n", (char *) call_function("remove",file_name ,NULL));
-                  
+                  file_name =  (char *) call_function("insert_to_json_file",content,bd1->payload); 
                }
                             
                 
@@ -113,23 +107,29 @@ void *poll_database_for_new_requests(void *vargp)
                   call_function(tp->config_key,tp->config_value,transform_file_name); 
                   content = call_function(tp->config_key,tp->config_value,bd1->payload);
                   printf("content is \n %s\n",content);
-                  file_name =  (char *) call_function("convert_to_json",content,bd1->payload);
-                  printf("%s\n",file_name);
-                  if((strcmp(((char *)call_function("email","Testmailchenab1@gmail.com",file_name)) ,"yes"))==0){
+                  file_name =  (char *) call_function("insert_to_json_file",content,bd1->envelope->MessageID);
+                  printf("%s\n", (char *) call_function("remove",transform_file_name ,NULL));
+                  free(transform_file_name);
+               }
+               
+               printf("%s\n",file_name);
+               if(((strcmp(((char *)call_function("email","Testmailchenab1@gmail.com",file_name)) ,"NO"))!=0)
+                     && ((strcmp(((char *)call_function("ftp",bd1->payload,file_name)) ,"NO"))!=0))
+                  {
                      printf("sent the json file of destination service\n");
                       update_esb_request("DONE",tn->id) ;
                   }
                   else{
                        printf("----------\nemail not sent\n-------------------\n");
-                       update_esb_request("ERROR",tn->id);   
+                       update_as_error(tn->id);   
                   }
                   printf("%s\n", (char *) call_function("remove",file_name ,NULL));
-               free(transform_file_name);
-               }
-              } 
+               
+             }
+             
             
             /* clean up the variables stored in heap*/
-            
+cleanup:            
             free_bmd(bd1);
             free_transform_config(tf);
             free_transport_config(tp);
@@ -137,8 +137,7 @@ void *poll_database_for_new_requests(void *vargp)
             free(file_name);
             free_request(tn);
 
-        }
-
+      }
        
         /**
          * Sleep for polling interval duration, say, 5 second.

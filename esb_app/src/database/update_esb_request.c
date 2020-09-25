@@ -1,3 +1,11 @@
+/**
+ * @brief Function updates esb_request in c.
+ * sql query: UPDATE esb_request SET status = ? WHERE id = ?                
+ * 
+ * returns 1 if update else -1.
+ * 
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

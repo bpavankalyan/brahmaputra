@@ -59,7 +59,7 @@ void *  http_request(void* url,void * code)
 	fprintf(stderr,"curl failed %s\n",curl_easy_strerror(res));
 	return NULL;
     }
-    //printf("%s\n", s.ptr);
+    printf("%s\n", s.ptr);
     
 
     /* always cleanup */

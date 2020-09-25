@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include "munit.h"
+#include "../test/munit.h"
 #include "stdlib.h"
 //#include "munit.c"
-#include "../adapter/adapter.h"
+#include "adapter.h"
 
 
 /* This is just to disable an MSVC warning about conditional
@@ -57,12 +57,14 @@ outputing it to the console */
 }
 
 
+
+
 static MunitResult test_email (const MunitParameter params[], void * fixture)
 {
   char * output = (char *) call_function("email_send","Testmailchenab1@gmail.com","http.c");
   munit_assert_string_equal(output,"NO");
   output = (char *) call_function("email","Testmailchenab1@gmail.com","adapter.h");
-  munit_assert_string_equal(output,"NO");
+  munit_assert_string_equal(output,"YES");
 
 }
 
@@ -71,7 +73,26 @@ static MunitResult test_email (const MunitParameter params[], void * fixture)
 static MunitResult test_http_request (const MunitParameter params[], void * fixture)
 {
   char * output = (char *) call_function("APIURL","https://ifsc.razorpay.com/","HDFC0CAGSBK");
-  munit_assert_ptr_not_null(output);
+  char * output_desired = get_file_data("output_http_test.json");
+  munit_assert_string_not_equal(output,output_desired);
+ 
+}
+
+/*
+static void *
+esb_request_setup(const MunitParameter params[], void *user_data)
+{
+
+  char * file_name = (char *) call_function("APIURL", "https://ifsc.razorpay.com/" ,"HDFC0CAGSBK" );
+  return file_name;
+}*/
+
+
+static MunitResult test_ftp (const MunitParameter params[], void * fixture)
+{
+
+  char * output = (char *) call_function("FTP","test","output_http_test.json");
+  munit_assert_string_equal(output,"NO");
  
 }
 
@@ -80,9 +101,9 @@ static MunitResult test_http_request (const MunitParameter params[], void * fixt
  * array of tests: */
 static MunitTest test_suite_tests[] = {
   
-  { (char*) "/example/xml_values", test_email, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
-  { (char*) "/example/bmd_valid", test_http_request, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
-  //{ (char*) "/example/bmd-validation", test_ftp, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params },
+  { (char*) "/example/email", test_email, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+  { (char*) "/example/http", test_http_request, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+  { (char*) "/example/ftp", test_ftp, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 
 
   { NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
@@ -123,7 +144,7 @@ static const MunitSuite test_suite = {
  * always mean success and failure).  I guess my point is that nothing
  * about µnit requires it. */
 #include <stdlib.h>
-#if 1
+#if 0
 int main(int argc, char** argv) {
   /* Finally, we'll actually run our test suite!  That second argument
    * is the user_data parameter which will be passed either to the

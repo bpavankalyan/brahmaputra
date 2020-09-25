@@ -1,3 +1,14 @@
+/**
+ * @brief Function inserts request into the esb_request table
+ * sql query: INSERT INTO esb_request (
+ *            sender_id,dest_id,message_type,reference_id,
+ *            message_id,data_location,status,status_details,received_on)
+ *            VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s')                  
+ * 
+ * returns 1 if inserted else 0.
+ * 
+ */
+ 
 #include <mysql/mysql.h>
 #include <stdio.h>
 #include <string.h>
@@ -30,11 +41,11 @@
         {
             received_on[i] = ' '; // change T to space
         }
-        if (i == n - 3) {
+      /*  if (i == n - 3) {
             char ch = ':';
             strncat(received_on, & ch, 1);
             j++;
-        }
+        }*/
         j++;
     }
     
@@ -53,7 +64,6 @@
 
     char query1[5000];
     char query2[5000];
-    int check = 1; //checking for duplicacy
 
     sprintf(query1, INSERT, Sender, Destination,
          MessageType,
@@ -74,6 +84,7 @@
 
     mysql_free_result(res);
     mysql_close(conn);
+    printf("success is %d \n" , success);
     return success;
 }
 /*

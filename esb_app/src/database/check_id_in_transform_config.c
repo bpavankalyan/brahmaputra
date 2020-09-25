@@ -1,3 +1,12 @@
+/**
+ * @brief Function returns route_id of a route if exists by performing
+ * sql query:SELECT status 
+ *           FROM esb_request
+ *           WHERE message_id = ?
+ * 
+ * returns status if message_id exists else NULL if does not exist.
+ * 
+ */
 
 #include <stdlib.h>
 #include <stdio.h>

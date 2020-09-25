@@ -67,7 +67,7 @@ int select_active_route(const char * Sender,const char * Destination, const  cha
 
 int check_id_in_transport_config(int route_id) ;
 int check_id_in_transform_config(int route_id) ;
-char* get_status_info(char *message_id);
+char* get_status_information(char *message_id);
 
 
 #endif

@@ -1,4 +1,13 @@
-
+/**
+ * @brief Function selects active  route id in routes tables.
+ * sql query: SELECT route_id FROM routes 
+ *            WHERE sender = '%s' AND destination = '%s'
+ *            AND message_type= '%s'  AND  is_active= 1                
+ * 
+ * returns route_id if active else -1.
+ * 
+ */
+ 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -34,15 +43,18 @@ int select_active_route(const char * Sender, const char * Destination, const  ch
         printf("Failed to execute quesry. Error: %s\n", mysql_error(conn));
         return -1;
     }
-
+    
+    printf("query is %s\n ", query);
+    
     res = mysql_store_result(conn);
     if(res== NULL)
        return -1;
-    row = mysql_fetch_row(res);
-    int nu=mysql_num_rows(res);
-    if(nu <1)
-      return -1;
-    route = atoi(row[0]);
+    if((row = mysql_fetch_row(res)))
+       route = atoi(row[0]);
+    else{
+     printf("NO ROW\n");
+     route= -1;
+     }
 
     mysql_free_result(res);
 

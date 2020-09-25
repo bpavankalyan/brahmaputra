@@ -1,3 +1,13 @@
+/**
+ * @brief Function returns task_node_info 
+ * sql query:SELECT status 
+ *           FROM esb_request
+ *           WHERE message_id = ?
+ * 
+ * returns status if message_id exists else NULL if does not exist.
+ * 
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

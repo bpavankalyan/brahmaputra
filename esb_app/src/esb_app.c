@@ -116,7 +116,7 @@ int get_status(struct http_request *req)
 
     if (http_argument_get_string(req, "messageid", &message_id))
     {   char *status;
-        status = get_status_info(message_id);
+        status = get_status_information(message_id);
         kore_buf_appendf(buf, "Status : %s\n",status);
     }
 
