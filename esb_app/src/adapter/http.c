@@ -64,7 +64,7 @@ void *  http_request(void* url,void * code)
 
     /* always cleanup */
     curl_easy_cleanup(curl);
-    return s.ptr;
+    return (void *) s.ptr;
   }
    return NULL;
   

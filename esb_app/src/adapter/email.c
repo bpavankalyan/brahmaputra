@@ -26,7 +26,7 @@
     FILE *fd = fopen(((char *) file_path ), "r");
     if(!fd){
       printf("no such file");
-      return 0;
+      return "NO";
     }
     curl_easy_setopt(curl, CURLOPT_READDATA,fd);
     curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);

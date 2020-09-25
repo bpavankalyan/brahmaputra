@@ -59,14 +59,10 @@ outputing it to the console */
 
 static MunitResult test_email (const MunitParameter params[], void * fixture)
 {
-  char * output = (char *) call_function("email_send","Testchenab1@gmail.com","http.c");
+  char * output = (char *) call_function("email_send","Testmailchenab1@gmail.com","http.c");
   munit_assert_string_equal(output,"NO");
-  output = (char *) call_function("email","Testmailchenab1@gmail.com","http.c");
-  munit_assert_string_equal(output,"YES");
-
-
-
-
+  output = (char *) call_function("email","Testmailchenab1@gmail.com","adapter.h");
+  munit_assert_string_equal(output,"NO");
 
 }
 
@@ -74,15 +70,9 @@ static MunitResult test_email (const MunitParameter params[], void * fixture)
 
 static MunitResult test_http_request (const MunitParameter params[], void * fixture)
 {
-  char * output = (char *) call_function("APIURL","https://ifsc.razorpay.com/","KARB0000001");
-  char * output_check = get_file_data("http_test.json");
-  munit_assert_string_not_equal(output,output_check);
-
-  output = (char *) call_function("APIURL","https://ifsc.razorpay.com/","HDFC0CAGSBK");
-  munit_assert_string_not_equal(output,output_check);
-
-
-
+  char * output = (char *) call_function("APIURL","https://ifsc.razorpay.com/","HDFC0CAGSBK");
+  munit_assert_ptr_not_null(output);
+ 
 }
 
 

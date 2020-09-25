@@ -46,7 +46,7 @@
 #include "database/database.h"
 
 
-#define NUM_THREADS 20
+#define NUM_THREADS 5
 
 //#define PATH_MAX 500
 
@@ -81,20 +81,54 @@ int esb_endpoint(struct http_request *req)
 		/* Invoke the ESB's main processing logic. */
 		int esb_status = process_esb_request(epr.bmd_path);
 		if (esb_status >= 0)
-		{
-			//TODO: Take suitable action
+		{      
+  
 			printf("\nProcessing SQL Queries...\n");
 			return (KORE_RESULT_OK);
 		}
 		else
 		{
-			//TODO: Take suitable action
+
 			printf("ESB failed to process the BMD.\n");
 			http_response(req, 400, NULL, 0);
 			return (KORE_RESULT_ERROR);
 		}
 	}
 }
+
+
+
+/*
+* @brief RESTFul API to the caller for querying
+* the status of a successfully submitted request 
+* by supplying the MessageID.
+*/
+
+
+int get_status(struct http_request *req)
+{
+    char *message_id;
+    struct kore_buf *buf;
+
+    http_populate_get(req);
+
+    buf = kore_buf_alloc(21);
+
+    if (http_argument_get_string(req, "messageid", &message_id))
+    {   char *status;
+        status = get_status_info(message_id);
+        kore_buf_appendf(buf, "Status : %s\n",status);
+    }
+
+    /* Now return the result to the client with a 200 status code. */
+    http_response(req, 200, buf->data, buf->offset);
+    kore_buf_free(buf);
+    
+    return (KORE_RESULT_OK);
+}
+
+
+
 
 /*
 Creates a directory in the given path and 
@@ -103,7 +137,7 @@ returns 0 if successfully created.
 
 static int mkdir_p(const char *path)  
 {
-    /* Adapted from http://stackoverflow.com/a/2336245/119527 */
+
     const size_t len = strlen(path);
     char _path[PATH_MAX];
     char *p; 
@@ -148,7 +182,7 @@ static char *create_work_dir_for_request()
 {
 	kore_log(LOG_INFO, "Creating the temporary work folder.");
 	/**
-	 * TODO: Create a temporary folder in the current directory.
+	 *  Create a temporary folder in the current directory.
 	 * Its name should be unique to each request.
 	 */
 
@@ -222,7 +256,7 @@ save_bmd(struct http_request *req)
 	/* While we have data from http_file_read(), write it. */
 	/* Alternatively you could look at file->offset and file->length. */
 	/**
-	 * TODO: The BMD should be saved at a proper unique file path.
+	 * The BMD should be saved at a proper unique file path.
 	 * That path then should be returned to the caller for allowing
 	 * further processing by the ESB.
 	 */
@@ -293,7 +327,6 @@ pthread_t thread_id[NUM_THREADS];
 void kore_parent_configure(int argc, char *argv[])
 {
 	printf("\n%%%%%%%%%% kore_parent_configure\n");
-	// TODO: Start a new thread for task polling
 	
 	/* Inorder to have thread safe environment
 	*  we must either call mysql_library_init() prior to spawning any threads
@@ -301,14 +334,14 @@ void kore_parent_configure(int argc, char *argv[])
 	if (mysql_library_init(0, NULL, NULL))
 	{
 	     fprintf(stderr, "Could not initialize MySQL client library\n");
-	     return -1;
+	     return ;
 	}
 	
         for(int i=0; i<NUM_THREADS ; i++){
             char str[4];
             sprintf(str,"%d",i);
-	    pthread_create(&thread_id[i], NULL, poll_database_for_new_requests, str);
-	    }
+	    pthread_create(&thread_id[i], NULL, poll_database_for_new_requests, NULL);
+	}
 
 }
 
@@ -316,7 +349,7 @@ void kore_parent_teardown(void)
 {
 	printf(">>>> kore_parent_teardown\n");
 	/**
-	 * TODO: Terminate the task polling thread.
+	 * Terminate the task polling thread.
 	 * Instead of killing it, ask the thread to terminate itself.
 	 */
 	 

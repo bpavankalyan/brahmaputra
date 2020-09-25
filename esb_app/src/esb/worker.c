@@ -34,12 +34,12 @@ task_node_info *  fetch_new_request_from_db()
 }
 
 /**
- * TODO: Implement the proper logic as per ESB specs.
+ *  Implement the proper logic as per ESB specs.
  */
 void *poll_database_for_new_requests(void *vargp)
 {
    printf("||------------------------------------------------||\n");
-   printf("  starting thread  %s\n",(char *) vargp);
+   printf("  starting thread \n");
    printf("||------------------------------------------------||\n");
 
    int i = 0;
@@ -80,8 +80,10 @@ void *poll_database_for_new_requests(void *vargp)
                bd1 = parse_bmd_xml(((char *)tn->data_location));
 
                printf("%s\n%s\n-----\n%s\n%s\n",tf->config_key,tf->config_value,tp->config_key,tp->config_value);         
-               if((tp!=NULL) && ((strcmp(tf->config_value,"string"))==0))
-               {           
+               if((tp!=NULL)
+               {
+                if((strcmp(tf->config_value,"string"))==0))
+                {           
                   content = call_function(tp->config_key,tp->config_value,bd1->payload);
                   printf("content is \n %s\n",content);
                   if((strcmp(content,"NO"))==0){
@@ -124,6 +126,7 @@ void *poll_database_for_new_requests(void *vargp)
                   printf("%s\n", (char *) call_function("remove",file_name ,NULL));
                free(transform_file_name);
                }
+              } 
             
             /* clean up the variables stored in heap*/
             
@@ -137,14 +140,11 @@ void *poll_database_for_new_requests(void *vargp)
         }
 
        
-
-sleep:
         /**
          * Sleep for polling interval duration, say, 5 second.
          */
         printf("||---------------------------------||\n");
-        printf("  Sleeping for 5 seconds");
-        printf(" thread  is %s\n", (char *) vargp);
+        printf("Sleeping for 5 seconds\n");
         printf("||-----------------------------------||\n");
 
         sleep(5);

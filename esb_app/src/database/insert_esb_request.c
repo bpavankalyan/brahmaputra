@@ -66,7 +66,6 @@
     if (mysql_query(conn, query1)) {
         printf("Failed to execute query.Error: %s\n", mysql_error(conn));
         success = -1;
-        return success;
     }
 
     res = mysql_use_result(conn);

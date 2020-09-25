@@ -45,7 +45,7 @@ int  is_bmd_valid(bmd  * bd)
       } 
     }
   }     
-   
+   printf("xml_file_invalid\n");
     return 0;                                         
 }
 
@@ -111,6 +111,7 @@ int validate_xml_file( bmd * bmd_file)
     fprintf(stderr,"Payload doesnot exist in bmd\n");
     return 0;
   }
+  printf("ALL EXISTS\n");
 
   return 1;
 }

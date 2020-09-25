@@ -13,6 +13,7 @@ task_node_info *  check_new_request(void) {
     MYSQL * conn;
     MYSQL_RES * res;
     MYSQL_ROW row;
+    int row_count=0;
     char query[STRING_SIZE];
     conn = mysql_init(NULL);
 
@@ -30,15 +31,20 @@ task_node_info *  check_new_request(void) {
     if (mysql_query(conn, query)) {
         printf("Failed to execute query. Error: %s\n", mysql_error(conn));
     }
+   
 
     res = mysql_store_result(conn);
 
     if(res == NULL)
        return NULL;
-
+       
+        
     task_node_info * task_node= (task_node_info *) malloc(sizeof(task_node_info));
+    
+    
 
-    while(row = mysql_fetch_row(res)) {  
+    if(row = mysql_fetch_row(res)) {  
+    row_count++;
     printf("%s\n",row[1]);
     printf("%s\n",row[2]);
     printf("%s\n",row[3]);
@@ -49,21 +55,22 @@ task_node_info *  check_new_request(void) {
     task_node->message_type = strdup(row[3]);
     task_node->data_location = strdup(row[7]);
 
-    return task_node;
-
     }
 
-   
-
+  
     /* free results */
     mysql_free_result(res);
+    mysql_close(conn);
+
+    if(row_count == 1) return task_node; 
+    
     return NULL;
 }
 
 /*
 int main()
 {
-  task_node_info * tn = check_new_request(13);
+  task_node_info * tn = check_new_request(83);
   printf("%d\n%s\n%s\n%s\n%s\n",tn->id,tn->sender, tn->destination, tn->message_type,tn->data_location);
   return 0;
 }

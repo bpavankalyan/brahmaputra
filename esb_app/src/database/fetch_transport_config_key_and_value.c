@@ -15,6 +15,7 @@ transport_config *  fetch_transport_config_key_and_value(int route_id){
     MYSQL_RES * res;
     MYSQL_ROW row;
     char query[STRING_SIZE];
+    int row_count=0;
     conn = mysql_init(NULL);
 
     /* Connect to database */
@@ -42,24 +43,30 @@ transport_config *  fetch_transport_config_key_and_value(int route_id){
 
     transport_config * tn = (transport_config * ) malloc(sizeof(transport_config));
 
-    while(row = mysql_fetch_row(res)) {  
+    if(row = mysql_fetch_row(res)) {  
+    row_count++;
     printf("%s\n",row[0]);
     printf("%s\n",row[1]);
     tn->config_key =strdup(row[0]);
     tn->config_value = strdup(row[1]);
 
-    return tn;
+
     }
     /* free results */
     mysql_free_result(res);
+    
+    mysql_close(conn);
+    
+    if(row_count == 1)
+        return tn;
 
     return NULL;
 
     
 }   
 
-/*
 
+/*
 int main()
 {
  transport_config * tn = fetch_transport_config_key_and_value(15);

@@ -1,5 +1,5 @@
-test: get_status.c
-	gcc -o test main.c get_status.c `mysql_config --cflags --libs`
+test: check_new_request.c
+	gcc -o test main.c check_new_request.c `mysql_config --cflags --libs`
 
 
 clean:
