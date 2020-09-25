@@ -48,27 +48,30 @@ someuser@OX:~/temp/esb_proj/esb_app$ tree
     ├── adapter
     │   ├── email.c
     │   ├── adapter.h
-    |   ├── dynamic_lookup.c
-    |   ├── http.c
-    |   ├── convert_to_json.c
-    │   └── http_post.c
-    |
+    │   ├── dynamic_lookup.c
+    │   ├── http.c
+    │   ├── json_related.c
+    │   ├── xml2json     <--------------- xml2json test cases
+    │   └── test_adapter.c
+    │
     ├── database   <-------- db access functions (c functions interacting database)
-    |   ├── database.h 
-    |   ├── insert_esb_request.c
-    |   ├── select_status.c
-    |   ├── check_new_requests.c
-    |   ├── fetch_transport_config_key_and_value.c
-    |   ├── fetch_tranform_config_key_and_value.c
-    |   ├── check_id_tranform_config.c
-    |   ├── check_id_tranport_config.c
-    |   └── select_active_route_id.c
-    |
+    │   ├──Database.sql
+    │   ├── database.h 
+    │   ├── insert_esb_request.c
+    │   ├── select_status.c
+    │   ├── check_new_requests.c
+    │   ├── fetch_transport_config_key_and_value.c
+    │   ├── fetch_tranform_config_key_and_value.c
+    │   ├── check_id_tranform_config.c
+    │   ├── check_id_tranport_config.c
+    │   ├── get_status.c
+    │   └── select_active_route_id.c
+    │
     ├── extract_bmd <---------- extracting and handling bmd xml messages.
-    |   ├── bmd_extract.c
-    |   ├── bmd_validate.c
-    |   └── bmd.h
-    |  
+    │   ├── bmd_extract.c
+    │   ├── bmd_validate.c
+    │   └── bmd.h
+    │  
     ├── esb
     │   ├── esb.c
     │   ├── esb.h
@@ -76,7 +79,8 @@ someuser@OX:~/temp/esb_proj/esb_app$ tree
     |    
     ├── esb_app.c
     ├── test_files
-    |  └── ( .xml files for testing kore and munits)
+    |   ├── input.sh <----------  shell script which takes input (post and get request)
+    |   └── ( .xml files for testing kore and munits) (bmd[1..14] .xml)
     |
     └── test  <--------- We have kept the munit files  in a common folder.
         ├── munit.c
@@ -148,8 +152,10 @@ kodev build
 kodev run
 ```
 
-Open another shell window and run:
-`curl --insecure -F "bmd_file=@/some/file/path/dummy_data.txt" https://localhost:8888/bmd`
+Open another terminal in Testcases folder and run shell script like following:
+`./input.sh bmd bmd1.xml bmd2.xml ` <---------- we can insert any .xml files as cammnd line arguments.
+The above cammand is useful when we want to insert post request.
+`./input.sh get-status 4ac268c2-f658-11ea-adc1-0242ac120002` <---------- sample Message ID (should be GUID STRING) we can status of all cammand line arguments messageid.
 
 Check the logs in first shell; it should show that the file was successfully received.
 
