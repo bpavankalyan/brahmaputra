@@ -67,7 +67,8 @@ void xml2json(xmlNode * node, int indent_len, char json[]) {
 
 }
 
-void xml_to_json(char * xml_file, char * json_file) {
+void xml_to_json(char * xml_file, char * json_file)
+{
   char json[1000] = "{\n";
   xmlDoc * doc = NULL;
   xmlNode * root_element = NULL;
@@ -94,7 +95,12 @@ void xml_to_json(char * xml_file, char * json_file) {
 
 }
 
-
+int fer(File * fp)
+{
+  if(fp==NULL)
+    return  1;
+  return 0;
+}
 
 void* convert_to_json(void * Payload, void * name)
 {
@@ -104,11 +110,8 @@ void* convert_to_json(void * Payload, void * name)
       FILE *file;
     	file = fopen(file_name,"w");
     	
-    	if(file == NULL) 
-    	{
-        	printf("file opening failed");
-        	return "NO";
-    	}
+    	if(fer(file))
+        return "NO";
     	
     	fprintf(file,"{\n \"Payload\":\"%s\"\n}",(char *) Payload);
     	
@@ -130,11 +133,8 @@ void* convert_to_json(void * Payload, void * name)
       FILE *file;
     	file = fopen(file_name,"w");
     	
-    	if(file == NULL) 
-    	{
-        	printf("file opening failed");
-          return "NO";
-    	}
+    if(fer(file))
+        return "NO";
     	
        /* writing the content into json file*/	
        fprintf(file, "\n%s\n", (char *) content);
