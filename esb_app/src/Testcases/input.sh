@@ -1,6 +1,5 @@
 #!/bin/bash
 
-m=$#
 
 if [ "$1" = "bmd" ]; then
 	while [ -n "$2" ]; do
