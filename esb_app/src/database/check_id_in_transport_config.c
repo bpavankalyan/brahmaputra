@@ -24,8 +24,8 @@
  *         0 for any failure
  */
 
-int check_id_in_transport_config(int route_id) {
-
+int check(int route_id , char * query_name)
+{
     MYSQL * conn;
     MYSQL_RES * res;
     MYSQL_ROW row;
@@ -40,7 +40,7 @@ int check_id_in_transport_config(int route_id) {
 	}  
 
     /* Execute SQL query to fetch all table names.*/
-    sprintf(query, SELECT_TRANSPORT_CONFIG, route_id);
+    sprintf(query, query_name, route_id);
     printf("%s\n", query);
     if (mysql_query(conn, query)) {
         printf("Failed to execute query. Error: %s\n", mysql_error(conn));
@@ -60,7 +60,12 @@ int check_id_in_transport_config(int route_id) {
 
     mysql_close(conn);
 
-    return 0;
+    return 0;	
+}
+
+int check_id_in_transport_config(int route_id) {
+
+	return check(route_id,SELECT_TRANSPORT_CONFIG);
 }
 
 /*
