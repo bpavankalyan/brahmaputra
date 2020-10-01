@@ -338,8 +338,6 @@ void kore_parent_configure(int argc, char *argv[])
 	}
 	
         for(int i=0; i<NUM_THREADS ; i++){
-            char str[4];
-            sprintf(str,"%d",i);
 	    pthread_create(&thread_id[i], NULL, poll_database_for_new_requests, NULL);
 	}
 
