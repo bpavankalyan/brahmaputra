@@ -62,7 +62,6 @@
     /*sql query to insert in table*/
 
     char query1[5000];
-    char query2[5000];
 
     sprintf(query1, INSERT, Sender, Destination,
          MessageType,
